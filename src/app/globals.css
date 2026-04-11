@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+/* =============================================
+   THEME VARIABLES — edit here to change the theme
+   ============================================= */
+
+:root {
+  /* Background */
+  --bg-primary: #080d1e;
+  --bg-secondary: #0d1328;
+  --bg-card: #131b38;
+  --bg-card-hover: #1a2448;
+  --bg-elevated: #172040;
+
+  /* Text */
+  --text-primary: #f0f0f5;
+  --text-secondary: #9d9db5;
+  --text-muted: #5c5c75;
+
+  /* Accent */
+  --accent-primary: #7c3aed;
+  --accent-primary-hover: #6d28d9;
+  --accent-secondary: #06b6d4;
+  --accent-gradient: linear-gradient(135deg, #7c3aed, #06b6d4);
+  --accent-gradient-text: linear-gradient(135deg, #a78bfa, #22d3ee);
+
+  /* Border */
+  --border-color: #1e2a4a;
+  --border-color-hover: #2e3c60;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 30px rgba(124, 58, 237, 0.25);
+  --shadow-glow-cyan: 0 0 30px rgba(6, 182, 212, 0.2);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* Layout */
+  --container-max: 1200px;
+  --header-height: 72px;
+
+  /* Font sizes */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.25rem;
+  --fs-2xl: 1.5rem;
+  --fs-3xl: 2rem;
+  --fs-4xl: 2.5rem;
+  --fs-5xl: 3.25rem;
+  --fs-hero: 4.5rem;
+}
+
+/* Tailwind v4 theme registration */
+@theme inline {
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-card: var(--bg-card);
+  --color-bg-card-hover: var(--bg-card-hover);
+  --color-bg-elevated: var(--bg-elevated);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-primary-hover: var(--accent-primary-hover);
+  --color-accent-secondary: var(--accent-secondary);
+
+  --color-border: var(--border-color);
+  --color-border-hover: var(--border-color-hover);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* =============================================
+   BASE STYLES
+   ============================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =============================================
+   UTILITY CLASSES
+   ============================================= */
+
+.gradient-text {
+  background: var(--accent-gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-border {
+  position: relative;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--accent-gradient);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+
+.glow-effect {
+  box-shadow: var(--shadow-glow);
+}
+
+.glow-effect:hover {
+  box-shadow: 0 0 40px rgba(124, 58, 237, 0.4);
+}
