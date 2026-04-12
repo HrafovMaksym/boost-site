@@ -1,5 +1,5 @@
 import { Card, Button } from "@/shared/ui";
-import type { GameService } from "@/shared/config/games";
+import type { GameService } from "@/entities/games/types";
 
 interface ServiceCardProps {
   service: GameService;

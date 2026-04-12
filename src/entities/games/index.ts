@@ -1,20 +1,4 @@
-export interface GameService {
-  title: string;
-  description: string;
-  href: string;
-  icon: string;
-  features: string[];
-}
-
-export interface GameConfig {
-  name: string;
-  slug: string;
-  tagline: string;
-  description: string;
-  icon: string;
-  gradient: string;
-  services: GameService[];
-}
+import { GameConfig } from "./types";
 
 export const GAMES: GameConfig[] = [
   {
@@ -91,7 +75,8 @@ export const GAMES: GameConfig[] = [
     services: [
       {
         title: "MMR Boost",
-        description: "Increase your matchmaking rating with our experienced players.",
+        description:
+          "Increase your matchmaking rating with our experienced players.",
         href: "/dota2",
         icon: "📈",
         features: [
@@ -115,7 +100,8 @@ export const GAMES: GameConfig[] = [
       },
       {
         title: "Calibration",
-        description: "Get the best possible calibration results for the new season.",
+        description:
+          "Get the best possible calibration results for the new season.",
         href: "/dota2",
         icon: "🎯",
         features: [
@@ -138,7 +124,8 @@ export const GAMES: GameConfig[] = [
     services: [
       {
         title: "Rank Boost",
-        description: "Climb from any rank to your desired tier with our expert players.",
+        description:
+          "Climb from any rank to your desired tier with our expert players.",
         href: "/valorant",
         icon: "🚀",
         features: [
@@ -150,7 +137,8 @@ export const GAMES: GameConfig[] = [
       },
       {
         title: "Placement Matches",
-        description: "Get the best results in your placement matches for the new act.",
+        description:
+          "Get the best results in your placement matches for the new act.",
         href: "/valorant",
         icon: "🎯",
         features: [

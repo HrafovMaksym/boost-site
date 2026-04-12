@@ -1,5 +1,6 @@
 import { Card } from "@/shared/ui";
-import type { GameConfig } from "@/shared/config/games";
+import type { GameConfig } from "@/entities/games/types";
+import { ArrowRight } from "lucide-react";
 
 interface GameCardProps {
   game: GameConfig;
@@ -40,9 +41,7 @@ export function GameCard({ game }: GameCardProps) {
 
         <div className="mt-6 flex items-center text-accent-primary text-sm font-semibold group-hover:gap-3 gap-2 transition-all duration-300">
           View Services
-          <span className="transition-transform duration-300 group-hover:translate-x-1">
-            &rarr;
-          </span>
+          <ArrowRight size={18} />
         </div>
       </div>
     </Card>

@@ -1,5 +1,5 @@
 import { Container } from "@/shared/ui";
-import { SITE_CONFIG } from "@/shared/config/games";
+import { SITE_CONFIG } from "@/entities/games";
 
 const stats = [
   { value: SITE_CONFIG.stats.ordersCompleted, label: "Orders Completed" },

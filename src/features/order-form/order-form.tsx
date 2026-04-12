@@ -16,10 +16,10 @@ interface OrderFormProps {
 export function OrderForm({ config }: OrderFormProps) {
   const [activeTab, setActiveTab] = useState(config.tabs?.[0]?.id ?? "");
   const [currentValue, setCurrentValue] = useState(
-    config.currentValue.defaultValue
+    config.currentValue.defaultValue,
   );
   const [desiredValue, setDesiredValue] = useState(
-    config.desiredValue.defaultValue
+    config.desiredValue.defaultValue,
   );
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, boolean>
@@ -64,8 +64,7 @@ export function OrderForm({ config }: OrderFormProps) {
         } else {
           let flatAmount = option.priceModifier;
           if (option.hasQuantity) {
-            flatAmount *=
-              quantities[option.id] ?? option.quantityDefault ?? 1;
+            flatAmount *= quantities[option.id] ?? option.quantityDefault ?? 1;
           }
           basePrice += flatAmount;
         }
@@ -75,7 +74,7 @@ export function OrderForm({ config }: OrderFormProps) {
     let discount = 0;
     let nextTier: { amount: number; discount: number } | undefined;
     const sortedTiers = [...config.discountTiers].sort(
-      (a, b) => a.threshold - b.threshold
+      (a, b) => a.threshold - b.threshold,
     );
 
     for (let i = 0; i < sortedTiers.length; i++) {
@@ -91,8 +90,7 @@ export function OrderForm({ config }: OrderFormProps) {
       }
     }
 
-    const total =
-      Math.round(basePrice * (1 - discount / 100) * 100) / 100;
+    const total = Math.round(basePrice * (1 - discount / 100) * 100) / 100;
     const cashback =
       Math.round(total * (config.cashbackPercent / 100) * 100) / 100;
 

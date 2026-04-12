@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Container } from "@/shared/ui";
-import { SITE_CONFIG } from "@/shared/config/games";
+import { SITE_CONFIG } from "@/entities/games";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
