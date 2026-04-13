@@ -1,10 +1,10 @@
 import { Container, SectionTitle } from "@/shared/ui";
 import { GAMES } from "@/entities/games";
-import { HeroSection } from "@/features/hero-section/hero-section";
-import { StatsSection } from "@/features/stats-section/stats-section";
-import { FeaturesSection } from "@/features/features-section/features-section";
-import { GameCard } from "@/features/game-card/game-card";
-import { HowItWorks } from "@/features/how-works/how-it-works";
+import { HeroSection } from "@/features/hero-section/ui/hero-section";
+import { StatsSection } from "@/features/stats-section/ui/stats-section";
+import { FeaturesSection } from "@/features/features-section/ui/features-section";
+import { GameCard } from "@/features/game-card/ui/game-card";
+import { HowItWorks } from "@/features/how-works/ui/how-it-works";
 
 export function HomePage() {
   return (
@@ -36,7 +36,7 @@ export function HomePage() {
         </Container>
       </section>
 
-      <div id="how-it-works">
+      <div id="how-it-works" className="scroll-mt-[var(--header-height)]">
         <HowItWorks />
       </div>
 

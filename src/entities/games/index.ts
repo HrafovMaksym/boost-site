@@ -1,5 +1,7 @@
 import { GameConfig } from "./types";
-
+import dota from "@/shared/assets/dota.png";
+import cs2 from "@/shared/assets/cs.png";
+import valorant from "@/shared/assets/val.jpg";
 export const GAMES: GameConfig[] = [
   {
     name: "CS2",
@@ -7,7 +9,7 @@ export const GAMES: GameConfig[] = [
     tagline: "Dominate the Competition",
     description:
       "Professional CS2 boosting services. Climb ranks, improve your Faceit level, and reach your Premier goals with our expert players.",
-    icon: "🎯",
+    backgroundImage: cs2,
     gradient: "from-yellow-500 to-orange-600",
     services: [
       {
@@ -36,19 +38,7 @@ export const GAMES: GameConfig[] = [
           "Rating guarantee",
         ],
       },
-      {
-        title: "ESEA Boost",
-        description:
-          "Climb ESEA ranks with professional players. From D- to A+, we've got you covered.",
-        href: "/cs2/esea",
-        icon: "🎖️",
-        features: [
-          "All ranks",
-          "RWS improvement",
-          "League placement",
-          "Pro players",
-        ],
-      },
+
       {
         title: "Coaching",
         description:
@@ -70,7 +60,7 @@ export const GAMES: GameConfig[] = [
     tagline: "Rise Through the Ranks",
     description:
       "Expert Dota 2 MMR boosting and coaching. Our 7000+ MMR players will help you reach your desired rank safely.",
-    icon: "⚔️",
+    backgroundImage: dota,
     gradient: "from-red-500 to-rose-600",
     services: [
       {
@@ -119,7 +109,7 @@ export const GAMES: GameConfig[] = [
     tagline: "Unlock Your True Rank",
     description:
       "Professional Valorant rank boosting. From Iron to Radiant, our top-tier players will carry you to victory.",
-    icon: "💎",
+    backgroundImage: valorant,
     gradient: "from-rose-500 to-pink-600",
     services: [
       {

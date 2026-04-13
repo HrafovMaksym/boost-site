@@ -99,12 +99,10 @@ export function OrderForm({ config }: OrderFormProps) {
 
   return (
     <div className="rounded-[var(--radius-lg)] bg-bg-card border border-border p-6 md:p-8 space-y-6 shadow-[var(--shadow-card)]">
-      {/* Title */}
       <h2 className="text-xl md:text-2xl font-bold text-text-primary">
         {config.title}
       </h2>
 
-      {/* Tabs */}
       {config.tabs && config.tabs.length > 0 && (
         <Tabs
           tabs={config.tabs}
@@ -113,7 +111,6 @@ export function OrderForm({ config }: OrderFormProps) {
         />
       )}
 
-      {/* Range inputs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <RangeInput
           label={config.currentValue.label}
@@ -135,7 +132,6 @@ export function OrderForm({ config }: OrderFormProps) {
         />
       </div>
 
-      {/* Options */}
       <OptionsGrid
         options={config.options}
         selected={selectedOptions}
@@ -145,7 +141,6 @@ export function OrderForm({ config }: OrderFormProps) {
         onQuantityChange={changeQuantity}
       />
 
-      {/* Extra sections */}
       {config.extraSections && config.extraSections.length > 0 && (
         <ExtraSections
           sections={config.extraSections}
@@ -154,7 +149,6 @@ export function OrderForm({ config }: OrderFormProps) {
         />
       )}
 
-      {/* Price summary */}
       <div className="border-t border-border pt-6">
         <PriceSummary
           total={pricing.total}
@@ -167,7 +161,6 @@ export function OrderForm({ config }: OrderFormProps) {
         />
       </div>
 
-      {/* Auth buttons */}
       <div className="flex gap-3 pt-2">
         <Button href="/login" variant="primary" fullWidth>
           Log In

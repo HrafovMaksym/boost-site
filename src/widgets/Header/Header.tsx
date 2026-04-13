@@ -1,7 +1,9 @@
+// ================= HEADER =================
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { Container } from "@/shared/ui";
 import { SITE_CONFIG } from "@/entities/games";
 
@@ -10,103 +12,126 @@ const NAV_LINKS = [
   { label: "CS2", href: "/cs2" },
   { label: "Dota 2", href: "/dota2" },
   { label: "Valorant", href: "/valorant" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Contacts", href: "/contacts" },
 ];
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdown, setDropdown] = useState(false);
+  const user = false;
 
   return (
-    <header
-      className="fixed top-0 left-0 right-0 z-50 border-b border-border"
-      style={{
-        background: "rgba(7, 7, 13, 0.85)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-      }}
-    >
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg-primary/80 backdrop-blur-xl">
       <Container>
         <div className="flex items-center justify-between h-[var(--header-height)]">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="text-xl md:text-2xl font-bold gradient-text tracking-tight"
-          >
+          <Link href="/" className="text-2xl font-bold gradient-text">
             {SITE_CONFIG.name}
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-2">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-4 py-2 text-text-secondary hover:text-text-primary rounded-lg hover:bg-bg-card transition-all duration-300 text-sm font-medium"
+                className="px-4 py-2 text-text-secondary hover:text-white rounded-xl hover:bg-bg-card transition"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          {/* CTA */}
-          <div className="hidden md:block">
-            <Link
-              href="/cs2"
-              className="inline-flex items-center px-5 py-2.5 bg-accent-primary hover:bg-accent-primary-hover text-white text-sm font-semibold rounded-full transition-all duration-300 glow-effect"
-            >
-              Order Now
-            </Link>
+          <div className="hidden md:flex items-center gap-3">
+            {!user ? (
+              <>
+                <Link
+                  href="/login"
+                  className="px-4 py-2 text-sm text-text-secondary hover:text-white"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="px-5 py-2 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-white text-sm font-semibold"
+                >
+                  Register
+                </Link>
+              </>
+            ) : (
+              <div className="relative">
+                <button
+                  onClick={() => setDropdown(!dropdown)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-bg-card hover:bg-bg-card-hover transition"
+                >
+                  <div className="w-8 h-8 rounded-full bg-accent-primary flex items-center justify-center text-white font-bold">
+                    U
+                  </div>
+                  <span className="text-sm">User</span>
+                </button>
+
+                <AnimatePresence>
+                  {dropdown && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute right-0 mt-2 w-48 rounded-xl bg-bg-card border border-border shadow-lg overflow-hidden"
+                    >
+                      <Link
+                        href="/profile"
+                        className="block px-4 py-2 hover:bg-bg-card-hover"
+                      >
+                        Profile
+                      </Link>
+                      <button className="w-full text-left px-4 py-2 hover:bg-bg-card-hover text-red-400">
+                        Logout
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
 
-          {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden flex flex-col gap-1.5 p-2 cursor-pointer"
-            aria-label="Toggle menu"
+            className="md:hidden flex flex-col gap-1.5 p-2"
           >
             <span
-              className={`block w-6 h-0.5 bg-text-primary transition-all duration-300 ${
-                isOpen ? "rotate-45 translate-y-2" : ""
-              }`}
+              className={`block w-6 h-0.5 bg-white ${isOpen ? "rotate-45 translate-y-2" : ""}`}
             />
             <span
-              className={`block w-6 h-0.5 bg-text-primary transition-all duration-300 ${
-                isOpen ? "opacity-0" : ""
-              }`}
+              className={`block w-6 h-0.5 bg-white ${isOpen ? "opacity-0" : ""}`}
             />
             <span
-              className={`block w-6 h-0.5 bg-text-primary transition-all duration-300 ${
-                isOpen ? "-rotate-45 -translate-y-2" : ""
-              }`}
+              className={`block w-6 h-0.5 bg-white ${isOpen ? "-rotate-45 -translate-y-2" : ""}`}
             />
           </button>
         </div>
 
-        {/* Mobile Nav */}
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ${
-            isOpen ? "max-h-80 pb-6" : "max-h-0"
-          }`}
-        >
-          <nav className="flex flex-col gap-1">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="px-4 py-3 text-text-secondary hover:text-text-primary rounded-lg hover:bg-bg-card transition-all duration-300 text-base font-medium"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link
-              href="/cs2"
-              onClick={() => setIsOpen(false)}
-              className="mt-2 inline-flex items-center justify-center px-5 py-3 bg-accent-primary hover:bg-accent-primary-hover text-white text-base font-semibold rounded-full transition-all duration-300"
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="md:hidden overflow-hidden"
             >
-              Order Now
-            </Link>
-          </nav>
-        </div>
+              <nav className="flex flex-col gap-2 py-4">
+                {NAV_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="px-4 py-3 rounded-lg hover:bg-bg-card"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Container>
     </header>
   );

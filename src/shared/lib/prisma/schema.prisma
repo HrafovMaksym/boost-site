@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String    @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  isVerified Boolean  @default(false) @map("is_verified")
+
+  name      String
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  role      UserRole  @default(USER)
+
+  verificationToken VerificationToken?
+  refreshTokens   RefreshToken[]
+  passwordResetTokens PasswordResetToken[]
+
+  orders Order[]
+
+  @@map("users")
+}
+model VerificationToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  token     String    @unique
+  userId    String    @unique @db.Uuid @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime? @map("verification_token_expires_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("verification_tokens")
+}
+model RefreshToken {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       String   @unique
+  expiresAt   DateTime @map("expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  revokedAt   DateTime? @map("revoked_at")
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+model PasswordResetToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+model Order {
+  id        String      @id @default(uuid()) @db.Uuid
+  status    OrderStatus @default(PENDING)
+
+
+  service      String
+  currentValue Int      @map("current_value")
+  desiredValue Int      @map("desired_value")
+
+  options    Json @default("{}") // { "optionId": true, ... }
+  quantities Json @default("{}") // { "optionId": 2, ... }
+  extras     Json @default("{}") // { "sectionId": "value", ... }
+
+
+  total    Decimal @db.Decimal(10, 2)
+  discount Decimal @default(0) @db.Decimal(10, 2)
+  cashback Decimal @default(0) @db.Decimal(10, 2)
+
+
+
+  userId    String   @db.Uuid @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([status])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+enum UserRole {
+  USER
+  ADMIN
+}

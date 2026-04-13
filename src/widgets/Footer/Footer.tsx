@@ -11,12 +11,11 @@ const FOOTER_LINKS = {
   "CS2 Services": [
     { label: "Faceit Boost", href: "/cs2/faceit" },
     { label: "Premier Boost", href: "/cs2/premier" },
-    { label: "ESEA Boost", href: "/cs2/esea" },
     { label: "Coaching", href: "/cs2/coaching" },
   ],
   Support: [
     { label: "Discord", href: "#" },
-    { label: "Telegram", href: "#" },
+
     { label: "FAQ", href: "#" },
   ],
 };
@@ -26,7 +25,6 @@ export function Footer() {
     <footer className="border-t border-border bg-bg-secondary">
       <Container className="py-12 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link
               href="/"
@@ -39,7 +37,6 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Links */}
           {Object.entries(FOOTER_LINKS).map(([title, links]) => (
             <div key={title}>
               <h4 className="text-text-primary font-semibold text-sm mb-4">
@@ -61,10 +58,10 @@ export function Footer() {
           ))}
         </div>
 
-        {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-text-muted text-sm">
-            &copy; {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.
+            &copy; {new Date().getFullYear()} {SITE_CONFIG.name}. All rights
+            reserved.
           </p>
           <div className="flex items-center gap-6">
             <Link

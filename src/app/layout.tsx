@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { MainLayout } from "./providers/main-layout";
+
 import "./globals.css";
+import { MainProvider } from "./providers";
+import { getUser } from "@/entities/user/get-user";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,18 +21,19 @@ export const metadata: Metadata = {
     "Professional gaming boost services for CS2, Dota 2, and Valorant. Fast, safe, and affordable rank boosting.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getUser();
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
       <body className="min-h-screen flex flex-col">
-        <MainLayout>{children}</MainLayout>
+        <MainProvider initialUser={user}>{children}</MainProvider>
       </body>
     </html>
   );

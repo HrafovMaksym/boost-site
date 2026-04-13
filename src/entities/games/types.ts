@@ -1,3 +1,5 @@
+import { StaticImageData } from "next/image";
+
 export interface GameService {
   title: string;
   description: string;
@@ -11,7 +13,7 @@ export interface GameConfig {
   slug: string;
   tagline: string;
   description: string;
-  icon: string;
+  backgroundImage: StaticImageData;
   gradient: string;
   services: GameService[];
 }
