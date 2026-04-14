@@ -11,3 +11,4 @@ export { Description } from "./text/description";
 export { Button } from "./buttons/button";
 export { SelectForm } from "./inputs/select-form";
 export { FadeIn } from "./fade-in";
+export { Loading } from "./loading/loading";
