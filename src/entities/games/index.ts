@@ -1,7 +1,7 @@
 import { GameConfig } from "./types";
 import dota from "@/shared/assets/dota.png";
 import cs2 from "@/shared/assets/cs.png";
-import valorant from "@/shared/assets/val.jpg";
+import valorant from "@/shared/assets/val.png";
 export const GAMES: GameConfig[] = [
   {
     name: "CS2",

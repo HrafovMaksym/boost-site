@@ -1,3 +1,4 @@
+"use client";
 import { Container } from "@/shared/ui";
 import { HeroSection } from "@/features/hero-section/ui/hero-section";
 import { OrderForm } from "@/features/order-form/order-form";

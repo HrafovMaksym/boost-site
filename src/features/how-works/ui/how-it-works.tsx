@@ -1,4 +1,7 @@
-import { Container, SectionTitle } from "@/shared/ui";
+"use client";
+
+import { motion } from "framer-motion";
+import { Container, SectionTitle, FadeIn } from "@/shared/ui";
 
 const steps = [
   {
@@ -25,14 +28,27 @@ export function HowItWorks() {
   return (
     <section className="py-20 md:py-28 bg-bg-secondary">
       <Container>
-        <SectionTitle
-          title="How It Works"
-          subtitle="Getting boosted is simple. Just follow these three easy steps."
-        />
+        <FadeIn>
+          <SectionTitle
+            title="How It Works"
+            subtitle="Getting boosted is simple. Just follow these three easy steps."
+          />
+        </FadeIn>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((item, index) => (
-            <div key={item.step} className="relative text-center md:text-left">
+            <motion.div
+              key={item.step}
+              className="relative text-center md:text-left"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.3,
+                ease: "easeOut",
+              }}
+            >
               {index < steps.length - 1 && (
                 <div className="hidden md:block absolute top-8 left-[60%] w-full h-px bg-border" />
               )}
@@ -52,7 +68,7 @@ export function HowItWorks() {
                   {item.description}
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </Container>

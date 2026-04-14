@@ -1,4 +1,7 @@
-import { Container, SectionTitle } from "@/shared/ui";
+"use client";
+
+import { motion } from "framer-motion";
+import { Container, SectionTitle, FadeIn } from "@/shared/ui";
 
 const features = [
   {
@@ -43,16 +46,26 @@ export function FeaturesSection() {
   return (
     <section className="py-20 md:py-28">
       <Container>
-        <SectionTitle
-          title="Why Choose Us"
-          subtitle="We provide the best boosting experience with top-tier security, speed, and support."
-        />
+        <FadeIn>
+          <SectionTitle
+            title="Why Choose Us"
+            subtitle="We provide the best boosting experience with top-tier security, speed, and support."
+          />
+        </FadeIn>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature) => (
-            <div
+          {features.map((feature, index) => (
+            <motion.div
               key={feature.title}
-              className="p-6 md:p-8 rounded-[var(--radius-lg)] bg-bg-card border border-border hover:border-border-hover transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card)]"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{
+                duration: 0.4,
+                delay: index * 0.1,
+                ease: "easeOut",
+              }}
+              className="px-10 py-8 rounded-[var(--radius-lg)] bg-bg-card border border-border hover:border-border-hover transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card)]"
             >
               <div className="text-3xl mb-4">{feature.icon}</div>
               <h3 className="text-lg font-semibold text-text-primary mb-2">
@@ -61,7 +74,7 @@ export function FeaturesSection() {
               <p className="text-text-secondary text-sm leading-relaxed">
                 {feature.description}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </Container>

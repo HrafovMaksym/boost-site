@@ -1,3 +1,5 @@
+"use client";
+import { motion } from "framer-motion";
 import { Button, Container } from "@/shared/ui";
 
 interface HeroSectionProps {
@@ -34,18 +36,33 @@ export function HeroSection({
 
       <Container className="relative z-10 py-24 md:py-32">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[var(--fs-hero)] font-extrabold leading-tight mb-6 tracking-tight">
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-[var(--fs-hero)] font-extrabold leading-tight mb-6 tracking-tight"
+          >
             {title}{" "}
             {gradientTitle && (
               <span className="gradient-text">{gradientTitle}</span>
             )}
-          </h1>
+          </motion.h1>
 
-          <p className="text-text-secondary text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+            className="text-text-secondary text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed"
+          >
             {subtitle}
-          </p>
+          </motion.p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
             <Button href={ctaHref} size="lg">
               {ctaText}
             </Button>
@@ -54,7 +71,7 @@ export function HeroSection({
                 {secondaryCtaText}
               </Button>
             )}
-          </div>
+          </motion.div>
         </div>
       </Container>
     </section>

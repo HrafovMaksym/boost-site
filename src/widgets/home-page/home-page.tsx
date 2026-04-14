@@ -1,10 +1,11 @@
-import { Container, SectionTitle } from "@/shared/ui";
+import { Container, SectionTitle, FadeIn } from "@/shared/ui";
 import { GAMES } from "@/entities/games";
 import { HeroSection } from "@/features/hero-section/ui/hero-section";
-import { StatsSection } from "@/features/stats-section/ui/stats-section";
 import { FeaturesSection } from "@/features/features-section/ui/features-section";
 import { GameCard } from "@/features/game-card/ui/game-card";
 import { HowItWorks } from "@/features/how-works/ui/how-it-works";
+import { DiscordCTA } from "@/features/discord-cta/ui/discord-cta";
+import { PaymentMarquee } from "@/features/payment-marquee/ui/payment-marquee";
 
 export function HomePage() {
   return (
@@ -19,18 +20,20 @@ export function HomePage() {
         secondaryCtaHref="#how-it-works"
       />
 
-      <StatsSection />
-
-      <section className="py-20 md:py-28">
+      <section className="py-20 md:py-28 border-y border-border">
         <Container>
-          <SectionTitle
-            title="Our Games"
-            subtitle="Choose your game and start climbing the ranks today."
-          />
+          <FadeIn>
+            <SectionTitle
+              title="Our Games"
+              subtitle="Choose your game and start climbing the ranks today."
+            />
+          </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {GAMES.map((game) => (
-              <GameCard key={game.slug} game={game} />
+            {GAMES.map((game, index) => (
+              <FadeIn key={game.slug} delay={index * 0.15}>
+                <GameCard game={game} />
+              </FadeIn>
             ))}
           </div>
         </Container>
@@ -41,6 +44,10 @@ export function HomePage() {
       </div>
 
       <FeaturesSection />
+
+      <PaymentMarquee />
+
+      <DiscordCTA />
     </>
   );
 }
