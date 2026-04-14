@@ -5,12 +5,12 @@ interface SectionTitleProps {
   centered?: boolean;
 }
 
-export function SectionTitle({
+export const SectionTitle = ({
   title,
   subtitle,
   gradient = true,
   centered = true,
-}: SectionTitleProps) {
+}: SectionTitleProps) => {
   return (
     <div className={`mb-12 md:mb-16 ${centered ? "text-center" : ""}`}>
       <h2
@@ -27,4 +27,4 @@ export function SectionTitle({
       )}
     </div>
   );
-}
+};

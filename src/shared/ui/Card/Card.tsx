@@ -7,7 +7,12 @@ interface CardProps {
   glow?: boolean;
 }
 
-export function Card({ children, href, className = "", glow = false }: CardProps) {
+export const Card = ({
+  children,
+  href,
+  className = "",
+  glow = false,
+}: CardProps) => {
   const styles = `
     block rounded-[var(--radius-lg)]
     bg-bg-card border border-border
@@ -27,4 +32,4 @@ export function Card({ children, href, className = "", glow = false }: CardProps
   }
 
   return <div className={styles}>{children}</div>;
-}
+};
