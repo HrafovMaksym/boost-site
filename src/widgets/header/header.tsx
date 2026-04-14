@@ -5,15 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Container } from "@/shared/ui";
 import { SITE_CONFIG } from "@/entities/games";
-
-const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "CS2", href: "/cs2" },
-  { label: "Dota 2", href: "/dota2" },
-  { label: "Valorant", href: "/valorant" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Contacts", href: "/contacts" },
-];
+import { NAV_LINKS } from "./model/consts";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
