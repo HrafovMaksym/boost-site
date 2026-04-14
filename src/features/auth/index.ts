@@ -1,7 +1,6 @@
 export {
   login,
   registration,
-  setUser,
   authReducer,
   verifyToken,
   resetPassword,

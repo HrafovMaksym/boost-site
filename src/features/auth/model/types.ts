@@ -17,7 +17,7 @@ export type RegistrationResponse = {
 export type AuthData = {
   email: string;
   password: string;
-  username: string;
+  name: string;
   confirmPassword?: string;
 };
 

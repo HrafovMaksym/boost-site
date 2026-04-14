@@ -1,7 +1,12 @@
 import ResetPassword from "@/widgets/auth/reset-password";
+import { Suspense } from "react";
 
 const ResetPasswordPage = () => {
-  return <ResetPassword />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPassword />
+    </Suspense>
+  );
 };
 
 export default ResetPasswordPage;

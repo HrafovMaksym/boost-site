@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { Ratelimit } from "@upstash/ratelimit";
+import { Ratelimit, type Duration } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { User } from "@/entities/user/types";
 import { serverFetch, ServerFetchError } from "./server-fetch";
@@ -31,7 +31,7 @@ const redis = Redis.fromEnv();
 
 const limiters = new Map<string, Ratelimit>();
 
-function getLimiter(max: number, window: string): Ratelimit {
+function getLimiter(max: number, window: Duration): Ratelimit {
   const key = `${max}:${window}`;
   let limiter = limiters.get(key);
   if (!limiter) {
@@ -55,7 +55,7 @@ type RouteHandler = (req: Request) => Promise<Response>;
 
 interface RateLimitOptions {
   max?: number; // макс. запросов за окно (по умолчанию 30)
-  window?: string; // окно: "1m", "10s", "1h" (по умолчанию "1m")
+  window?: Duration; // окно: "1m", "10s", "1h" (по умолчанию "1m")
 }
 
 export function withRateLimit(

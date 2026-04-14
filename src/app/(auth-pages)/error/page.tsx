@@ -1,7 +1,5 @@
-import ErrorAuth from "@/widgets/auth/error";
-
 const ErrorPage = () => {
-  return <ErrorAuth />;
+  return null;
 };
 
 export default ErrorPage;
