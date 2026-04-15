@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BoostPro — Professional Gaming Boost Services",
+  title: "CarryMe — Professional Gaming Boost Services",
   description:
     "Professional gaming boost services for CS2, Dota 2, and Valorant. Fast, safe, and affordable rank boosting.",
 };

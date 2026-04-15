@@ -6,13 +6,13 @@ const CONTACTS = [
   {
     icon: Mail,
     label: "Email",
-    value: "info@boostpro.com",
-    href: "mailto:info@boostpro.com",
+    value: "info@carryme.com",
+    href: "mailto:info@carryme.com",
   },
   {
     icon: MessageCircle,
     label: "Discord",
-    value: "boostpro",
+    value: "carryme",
     href: "#",
   },
 ];
@@ -23,7 +23,7 @@ export function ContactPage() {
       <Container>
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Contact <span className="gradient-text">BoostPro</span>
+            Contact <span className="gradient-text">CarryMe</span>
           </h1>
           <p className="text-text-secondary text-lg max-w-md mx-auto leading-relaxed">
             Have a question or need help? We&apos;re here for you.

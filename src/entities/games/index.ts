@@ -155,7 +155,7 @@ export const GAMES: GameConfig[] = [
 ];
 
 export const SITE_CONFIG = {
-  name: "BoostPro",
+  name: "CarryMe",
   tagline: "Level Up Your Game",
   description:
     "Professional gaming boost services for CS2, Dota 2, and Valorant. Fast, safe, and affordable.",

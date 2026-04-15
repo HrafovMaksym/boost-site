@@ -2,7 +2,7 @@ import { ValorantPage } from "@/widgets/valorant/valorant-page";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Valorant Boosting Services — BoostPro",
+  title: "Valorant Boosting Services — CarryMe",
   description:
     "Professional Valorant rank boosting. From Iron to Radiant with our top-tier players. Fast, safe, affordable.",
 };
