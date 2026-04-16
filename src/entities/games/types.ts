@@ -4,7 +4,7 @@ export interface GameService {
   title: string;
   description: string;
   href: string;
-  icon: string;
+  icon: string | StaticImageData;
   features: string[];
 }
 

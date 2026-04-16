@@ -3,8 +3,8 @@ import * as argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
 import { createHash } from "crypto";
 
-import { sendMail } from "@/shared/lib/mail/mailer";
-import { verifyEmailTemplate } from "@/shared/lib/mail/templates/verify-email";
+import { sendMail } from "@/shared/server-actions/mail/mailer";
+import { verifyEmailTemplate } from "@/shared/server-actions/mail/templates/verify-email";
 import prisma from "@/shared/lib/prisma/prisma";
 import { getUrl } from "@/shared/server-actions/get-url";
 

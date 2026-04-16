@@ -16,7 +16,7 @@ const FOOTER_LINKS = {
   Support: [
     { label: "Discord", href: "#" },
 
-    { label: "FAQ", href: "#" },
+    { label: "FAQ", href: "/faq" },
   ],
 };
 
@@ -65,13 +65,13 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-6">
             <Link
-              href="#"
+              href="/privacy-policy"
               className="text-text-muted hover:text-text-primary text-sm transition-colors"
             >
               Privacy Policy
             </Link>
             <Link
-              href="#"
+              href="/terms"
               className="text-text-muted hover:text-text-primary text-sm transition-colors"
             >
               Terms of Service

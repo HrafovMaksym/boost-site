@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { createHash } from "crypto";
 
-import { sendMail } from "@/shared/lib/mail/mailer";
+import { sendMail } from "@/shared/server-actions/mail/mailer";
 import prisma from "@/shared/lib/prisma/prisma";
 import { getUrl } from "@/shared/server-actions/get-url";
 

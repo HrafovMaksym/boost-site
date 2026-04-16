@@ -2,6 +2,8 @@ import { GameConfig } from "./types";
 import dota from "@/shared/assets/dota.png";
 import cs2 from "@/shared/assets/cs.png";
 import valorant from "@/shared/assets/val.png";
+import premierGif from "@/shared/assets/gif/primier.gif";
+
 export const GAMES: GameConfig[] = [
   {
     name: "CS2",
@@ -30,7 +32,7 @@ export const GAMES: GameConfig[] = [
         description:
           "Increase your Premier rating with consistent wins. Reach any rating tier you desire.",
         href: "/cs2/premier",
-        icon: "⭐",
+        icon: premierGif,
         features: [
           "Any rating",
           "Solo or duo queue",

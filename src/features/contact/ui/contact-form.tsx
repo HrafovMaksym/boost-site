@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { AlertCircle } from "lucide-react";
 
 import { InputForm } from "@/shared/ui/inputs/input-auth-form";
 import { SelectForm } from "@/shared/ui/inputs/select-form";
@@ -61,24 +62,27 @@ export function ContactForm() {
 
   return (
     <form className="w-full mt-6" onSubmit={handleSubmit(onSubmit)}>
-      <InputForm
-        label="Your Name"
-        type="text"
-        placeholder=""
-        register={register("name")}
-        errorType="name"
-        errors={errors}
-        style="login"
-      />
-      <InputForm
-        label="Email Address"
-        type="email"
-        placeholder=""
-        register={register("email")}
-        errorType="email"
-        errors={errors}
-        style="login"
-      />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
+        <InputForm
+          label="Your Name"
+          type="text"
+          placeholder="Enter your name"
+          register={register("name")}
+          errorType="name"
+          errors={errors}
+          style="login"
+        />
+        <InputForm
+          label="Email Address"
+          type="email"
+          placeholder="Enter your email"
+          register={register("email")}
+          errorType="email"
+          errors={errors}
+          style="login"
+        />
+      </div>
+
       <SelectForm
         label="Subject"
         options={SUBJECT_OPTIONS}
@@ -86,29 +90,34 @@ export function ContactForm() {
         errorType="subject"
         errors={errors}
       />
-      <div className="relative w-full mb-6">
+
+      <div className="relative w-full mb-8">
+        <label className="block text-sm font-semibold mb-2 ml-1 text-text-secondary">
+          Message
+        </label>
         <textarea
           {...register("message")}
-          placeholder="Your message..."
-          rows={4}
+          placeholder="How can we help you?"
+          rows={5}
           className="
             w-full rounded-[var(--radius-md)] border
-            bg-bg-card/60 backdrop-blur-sm
+            bg-bg-card/40 backdrop-blur-md
             px-4 py-4 text-base text-text-primary outline-none
             placeholder:text-text-muted caret-accent-primary
-            transition-[border-color,box-shadow] duration-300 hover:border-border-hover resize-none
-            border-border focus:border-accent-primary/70 focus:ring-2 focus:ring-accent-primary/20
+            transition-all duration-300 hover:border-border-hover resize-none
+            border-border/60 focus:border-accent-primary/70 focus:ring-2 focus:ring-accent-primary/20
           "
         />
         {errors.message && (
           <p className="mt-1.5 flex items-center gap-1.5 pl-1 text-xs text-red-400">
+            <AlertCircle size={12} />
             {errors.message.message}
           </p>
         )}
       </div>
 
       <ButtonDefault
-        styles="w-full py-3"
+        styles="w-full py-4 text-lg font-bold"
         text="Send Message"
         type="submit"
         loading={isLoading}

@@ -7,10 +7,14 @@ import { Container } from "@/shared/ui";
 import { SITE_CONFIG } from "@/entities/games";
 import { NAV_LINKS } from "./model/consts";
 
+import { useSelector } from "react-redux";
+import { RootState } from "@/shared/config/store/store";
+import { logout } from "@/features/auth/model/actions";
+
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdown, setDropdown] = useState(false);
-  const user = false;
+  const { user } = useSelector((state: RootState) => state.user);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg-primary/80 backdrop-blur-xl">
@@ -74,7 +78,10 @@ export function Header() {
                       >
                         Profile
                       </Link>
-                      <button className="w-full text-left px-4 py-2 hover:bg-bg-card-hover text-red-400">
+                      <button
+                        onClick={() => logout()}
+                        className="w-full text-left px-4 py-2 hover:bg-bg-card-hover text-red-400"
+                      >
                         Logout
                       </button>
                     </motion.div>
