@@ -5,6 +5,8 @@ import { ProfileSidebar } from "@/widgets/profile/profile-sidebar";
 import { redirect } from "next/navigation";
 import { getSession } from "@/features/auth/model/actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProfileLayout({
   children,
 }: Readonly<{

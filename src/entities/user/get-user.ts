@@ -16,6 +16,16 @@ export async function getUser(): Promise<User | null> {
       createdAt: session.createdAt,
     };
   } catch (error) {
+    if (error instanceof Error) {
+      const isDynamicServerError =
+        error.message.includes("Dynamic server usage") ||
+        (error as { digest?: string }).digest === "DYNAMIC_SERVER_USAGE";
+
+      if (isDynamicServerError) {
+        throw error;
+      }
+    }
+
     console.error(
       "Error fetching user:",
       error instanceof Error ? error.message : error,
