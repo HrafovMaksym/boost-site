@@ -13,6 +13,7 @@ export async function getUser(): Promise<User | null> {
       email: session.email,
       name: session.name,
       role: session.role,
+      createdAt: session.createdAt,
     };
   } catch (error) {
     console.error(

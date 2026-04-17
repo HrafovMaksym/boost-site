@@ -3,6 +3,8 @@ import dota from "@/shared/assets/dota.png";
 import cs2 from "@/shared/assets/cs.png";
 import valorant from "@/shared/assets/val.png";
 import premierGif from "@/shared/assets/gif/primier.gif";
+import faceitGif from "@/shared/assets/gif/faceit.gif";
+import coachGif from "@/shared/assets/gif/coach.gif";
 
 export const GAMES: GameConfig[] = [
   {
@@ -19,7 +21,7 @@ export const GAMES: GameConfig[] = [
         description:
           "Level up your Faceit account from any level to your desired rank. Our pros maintain high win rates.",
         href: "/cs2/faceit",
-        icon: "🏆",
+        icon: faceitGif,
         features: [
           "Levels 1-10",
           "High win rate",
@@ -46,7 +48,7 @@ export const GAMES: GameConfig[] = [
         description:
           "Learn from professional CS2 players. Improve your aim, game sense, and strategy with 1-on-1 sessions.",
         href: "/cs2/coaching",
-        icon: "🎓",
+        icon: coachGif,
         features: [
           "1-on-1 sessions",
           "Demo review",

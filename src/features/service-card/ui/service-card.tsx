@@ -15,12 +15,12 @@ export function ServiceCard({ service }: ServiceCardProps) {
         <div>
           <div className="mb-4">
             {isImageIcon && (
-              <div className="relative w-12 h-12 md:w-16 md:h-16">
+              <div className="relative w-9 h-9 md:w-12  md:h-12">
                 <Image
                   src={service.icon}
                   alt={service.title}
                   fill
-                  className="object-contain"
+                  className="object-contain rounded-2xl"
                 />
               </div>
             )}

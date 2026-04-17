@@ -48,7 +48,7 @@ const VerifyToken = () => {
 
   const handleContinue = () => {
     setIsRedirecting(true);
-    router.push("/onboarding");
+    router.push("/");
   };
 
   return (
@@ -143,9 +143,7 @@ const VerifyToken = () => {
               `}
             >
               <span className="relative z-10">
-                {isRedirecting
-                  ? "Redirecting..."
-                  : "Continue to Login"}
+                {isRedirecting ? "Redirecting..." : "Continue to Login"}
               </span>
               {!isRedirecting && (
                 <ArrowRight

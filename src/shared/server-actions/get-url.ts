@@ -1,5 +1,5 @@
 "use server";
 
-export const getUrl = () => {
+export async function getUrl() {
   return process.env.WEB_SITE_URL;
-};
+}

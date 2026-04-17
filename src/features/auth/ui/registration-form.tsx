@@ -51,9 +51,9 @@ const RegistrationForm = () => {
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="mt-8 flex w-full flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-8 text-center backdrop-blur-md shadow-2xl"
+        className="mt-8 flex w-full flex-col items-center justify-center rounded-[var(--radius-lg)] border border-border bg-bg-card/40 p-10 text-center backdrop-blur-xl shadow-2xl"
       >
-        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400 ring-8 ring-emerald-500/5">
+        <div className="mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-accent-primary/10 text-accent-primary ring-8 ring-accent-primary/5">
           <motion.div
             initial={{ scale: 0, rotate: -45 }}
             animate={{ scale: 1, rotate: 0 }}
@@ -64,22 +64,23 @@ const RegistrationForm = () => {
               damping: 15,
             }}
           >
-            <MailCheck size={40} />
+            <MailCheck size={48} />
           </motion.div>
         </div>
-        <h3 className="mb-2 text-xl font-bold tracking-tight text-white">
+        <h3 className="mb-3 text-2xl font-bold tracking-tight text-text-primary">
           Registration Successful!
         </h3>
-        <p className="max-w-[260px] text-sm leading-relaxed text-[var(--color-text-secondary)]">
-          Check your email for a verification link.
+        <p className="max-w-xs text-text-secondary leading-relaxed">
+          We&apos;ve sent a verification link to your email. Please check your
+          inbox to activate your account.
         </p>
         <Link
           href="/login"
-          className="group mt-8 flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-white/10 hover:shadow-lg active:scale-95"
+          className="group mt-10 flex items-center gap-3 rounded-full bg-accent-primary px-8 py-3 text-sm font-bold text-white transition-all hover:bg-accent-primary-hover hover:shadow-[0_0_20px_rgba(124,58,237,0.3)] active:scale-95"
         >
           Back to Login
           <ArrowRight
-            size={16}
+            size={18}
             className="transition-transform group-hover:translate-x-1"
           />
         </Link>
@@ -117,9 +118,7 @@ const RegistrationForm = () => {
       />
 
       {error && (
-        <p className="mt-2 text-[14px] font-medium text-[var(--color-error)]">
-          {error}
-        </p>
+        <p className="mt-2 text-[14px] font-medium text-red-500">{error}</p>
       )}
 
       <ButtonDefault
@@ -139,7 +138,7 @@ const RegistrationForm = () => {
         </span>
         <Link
           href="/login"
-          className="cursor-pointer text-[15px] text-[var(--color-primary)] underline opacity-90 transition-all duration-300 ease-in-out hover:text-[var(--color-primary-hover)] hover:opacity-100"
+          className="cursor-pointer text-[15px] text-[white] underline opacity-90 transition-all duration-300 ease-in-out hover:text-[var(--color-primary-hover)] hover:opacity-100"
         >
           Log In
         </Link>

@@ -10,10 +10,14 @@ interface SendMailOptions {
 }
 
 export async function sendMail({ to, subject, html }: SendMailOptions) {
-  return resend.emails.send({
-    from: process.env.RESEND_FROM!,
+  const response = await resend.emails.send({
+    from: process.env.SUPPORT_EMAIL!,
     to,
     subject,
     html,
   });
+
+  console.log("Resend response:", response);
+
+  return response;
 }

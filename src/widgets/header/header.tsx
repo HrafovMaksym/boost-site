@@ -7,14 +7,13 @@ import { Container } from "@/shared/ui";
 import { SITE_CONFIG } from "@/entities/games";
 import { NAV_LINKS } from "./model/consts";
 
-import { useSelector } from "react-redux";
-import { RootState } from "@/shared/config/store/store";
 import { logout } from "@/features/auth/model/actions";
+import { useAppSelector } from "@/shared/hooks/redux-hook";
 
 export function Header() {
+  const { user } = useAppSelector((state) => state.user);
   const [isOpen, setIsOpen] = useState(false);
   const [dropdown, setDropdown] = useState(false);
-  const { user } = useSelector((state: RootState) => state.user);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg-primary/80 backdrop-blur-xl">
@@ -46,10 +45,10 @@ export function Header() {
                   Login
                 </Link>
                 <Link
-                  href="/register"
+                  href="/registration"
                   className="px-5 py-2 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-white text-sm font-semibold"
                 >
-                  Register
+                  Registration
                 </Link>
               </>
             ) : (

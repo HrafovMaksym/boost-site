@@ -1,8 +1,10 @@
 "use client";
-import { Title } from "@/shared/ui";
+import { useAppSelector } from "@/shared/hooks/redux-hook";
+import { Description, Title } from "@/shared/ui";
 import React from "react";
 
 const Profile = () => {
+  const { user } = useAppSelector((state) => state.user);
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-2">
@@ -26,7 +28,7 @@ const Profile = () => {
                 Full Name
               </span>
               <p className="text-text-primary font-semibold text-lg">
-                {user.name}
+                {user?.name}
               </p>
             </div>
 
@@ -35,7 +37,7 @@ const Profile = () => {
                 Email Address
               </span>
               <p className="text-text-primary font-semibold text-lg">
-                {user.email}
+                {user?.email}
               </p>
             </div>
           </div>
@@ -53,7 +55,7 @@ const Profile = () => {
                 Role
               </span>
               <div className="inline-flex px-2.5 py-0.5 rounded-full bg-accent-primary/10 border border-accent-primary/20 text-accent-primary text-xs font-bold uppercase">
-                {user.role}
+                {user?.role}
               </div>
             </div>
 
@@ -62,11 +64,13 @@ const Profile = () => {
                 Joined
               </span>
               <p className="text-text-primary font-semibold text-lg">
-                {new Date(user.createdAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                {user?.createdAt
+                  ? new Date(user.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
+                  : "N/A"}
               </p>
             </div>
           </div>

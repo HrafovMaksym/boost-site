@@ -1,7 +1,5 @@
+import Profile from "@/widgets/profile/profile";
 
-
-export default async function ProfilePage() {
-  return (
-
-  );
+export default function ProfilePage() {
+  return <Profile />;
 }

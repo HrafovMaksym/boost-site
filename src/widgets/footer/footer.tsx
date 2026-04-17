@@ -24,8 +24,8 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-bg-secondary">
       <Container className="py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="col-span-2 md:col-span-1">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 lg:gap-16">
+          <div className="col-span-2 md:col-span-1 md:pr-8">
             <Link
               href="/"
               className="text-xl font-bold gradient-text tracking-tight"
