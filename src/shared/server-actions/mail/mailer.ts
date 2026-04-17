@@ -17,7 +17,5 @@ export async function sendMail({ to, subject, html }: SendMailOptions) {
     html,
   });
 
-  console.log("Resend response:", response);
-
   return response;
 }
