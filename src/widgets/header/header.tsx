@@ -7,10 +7,13 @@ import { Container } from "@/shared/ui";
 import { SITE_CONFIG } from "@/entities/games";
 import { NAV_LINKS } from "./model/consts";
 
+import { logout } from "@/features/auth/model/actions";
+import { useAppSelector } from "@/shared/hooks/redux-hook";
+
 export function Header() {
+  const { user } = useAppSelector((state) => state.user);
   const [isOpen, setIsOpen] = useState(false);
   const [dropdown, setDropdown] = useState(false);
-  const user = false;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg-primary/80 backdrop-blur-xl">
@@ -42,10 +45,10 @@ export function Header() {
                   Login
                 </Link>
                 <Link
-                  href="/register"
+                  href="/registration"
                   className="px-5 py-2 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-white text-sm font-semibold"
                 >
-                  Register
+                  Registration
                 </Link>
               </>
             ) : (
@@ -74,7 +77,10 @@ export function Header() {
                       >
                         Profile
                       </Link>
-                      <button className="w-full text-left px-4 py-2 hover:bg-bg-card-hover text-red-400">
+                      <button
+                        onClick={() => logout()}
+                        className="w-full text-left px-4 py-2 hover:bg-bg-card-hover text-red-400"
+                      >
                         Logout
                       </button>
                     </motion.div>

@@ -16,7 +16,7 @@ const FOOTER_LINKS = {
   Support: [
     { label: "Discord", href: "#" },
 
-    { label: "FAQ", href: "#" },
+    { label: "FAQ", href: "/faq" },
   ],
 };
 
@@ -24,8 +24,8 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-bg-secondary">
       <Container className="py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="col-span-2 md:col-span-1">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 lg:gap-16">
+          <div className="col-span-2 md:col-span-1 md:pr-8">
             <Link
               href="/"
               className="text-xl font-bold gradient-text tracking-tight"
@@ -65,13 +65,13 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-6">
             <Link
-              href="#"
+              href="/privacy-policy"
               className="text-text-muted hover:text-text-primary text-sm transition-colors"
             >
               Privacy Policy
             </Link>
             <Link
-              href="#"
+              href="/terms"
               className="text-text-muted hover:text-text-primary text-sm transition-colors"
             >
               Terms of Service

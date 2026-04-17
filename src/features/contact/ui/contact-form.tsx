@@ -2,29 +2,17 @@
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { AlertCircle } from "lucide-react";
 
 import { InputForm } from "@/shared/ui/inputs/input-auth-form";
 import { SelectForm } from "@/shared/ui/inputs/select-form";
 import { ButtonDefault } from "@/shared/ui";
-
-const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email"),
-  subject: z.string().min(1, "Please select a subject"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
-});
-
-type ContactFormData = z.infer<typeof contactSchema>;
-
-const SUBJECT_OPTIONS = [
-  { value: "order", label: "Order Issue" },
-  { value: "payment", label: "Payment" },
-  { value: "partnership", label: "Partnership" },
-  { value: "other", label: "Other" },
-];
+import { ContactFormData, contactSchema } from "../model/validation";
+import { SUBJECT_OPTIONS } from "../model/consts";
+import { sendContactEmail } from "../model/actions";
 
 export function ContactForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,25 +21,21 @@ export function ContactForm() {
     register,
     handleSubmit,
     reset,
-    watch,
     formState: { errors },
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
   });
 
-  const name = watch("name");
-  const email = watch("email");
-  const subject = watch("subject");
-  const message = watch("message");
-  const isFormValid = !!(name && email && subject && message);
-
   const onSubmit: SubmitHandler<ContactFormData> = async (data) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      // TODO: send to API
-      console.log(data);
-      toast.success("Message sent successfully!");
-      reset();
+      const result = await sendContactEmail(data);
+      if (result.success) {
+        toast.success("Message sent successfully!");
+        reset();
+      } else {
+        toast.error(result.error || "Failed to send message");
+      }
     } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
@@ -61,24 +45,27 @@ export function ContactForm() {
 
   return (
     <form className="w-full mt-6" onSubmit={handleSubmit(onSubmit)}>
-      <InputForm
-        label="Your Name"
-        type="text"
-        placeholder=""
-        register={register("name")}
-        errorType="name"
-        errors={errors}
-        style="login"
-      />
-      <InputForm
-        label="Email Address"
-        type="email"
-        placeholder=""
-        register={register("email")}
-        errorType="email"
-        errors={errors}
-        style="login"
-      />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
+        <InputForm
+          label="Your Name"
+          type="text"
+          placeholder="Enter your name"
+          register={register("name")}
+          errorType="name"
+          errors={errors}
+          style="login"
+        />
+        <InputForm
+          label="Email Address"
+          type="email"
+          placeholder="Enter your email"
+          register={register("email")}
+          errorType="email"
+          errors={errors}
+          style="login"
+        />
+      </div>
+
       <SelectForm
         label="Subject"
         options={SUBJECT_OPTIONS}
@@ -86,34 +73,39 @@ export function ContactForm() {
         errorType="subject"
         errors={errors}
       />
-      <div className="relative w-full mb-6">
+
+      <div className="relative w-full mb-8">
+        <label className="block text-sm font-semibold mb-2 ml-1 text-text-secondary">
+          Message
+        </label>
         <textarea
           {...register("message")}
-          placeholder="Your message..."
-          rows={4}
+          placeholder="How can we help you?"
+          rows={5}
           className="
             w-full rounded-[var(--radius-md)] border
-            bg-bg-card/60 backdrop-blur-sm
+            bg-bg-card/40 backdrop-blur-md
             px-4 py-4 text-base text-text-primary outline-none
             placeholder:text-text-muted caret-accent-primary
-            transition-[border-color,box-shadow] duration-300 hover:border-border-hover resize-none
-            border-border focus:border-accent-primary/70 focus:ring-2 focus:ring-accent-primary/20
+            transition-all duration-300 hover:border-border-hover resize-none
+            border-border/60 focus:border-accent-primary/70 focus:ring-2 focus:ring-accent-primary/20
           "
         />
         {errors.message && (
           <p className="mt-1.5 flex items-center gap-1.5 pl-1 text-xs text-red-400">
+            <AlertCircle size={12} />
             {errors.message.message}
           </p>
         )}
       </div>
 
       <ButtonDefault
-        styles="w-full py-3"
+        styles="w-full py-4 text-lg font-bold"
         text="Send Message"
         type="submit"
         loading={isLoading}
         onClick={handleSubmit(onSubmit)}
-        disabled={!isFormValid}
+        disabled={isLoading}
       />
     </form>
   );

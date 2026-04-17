@@ -32,7 +32,10 @@ export function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {GAMES.map((game, index) => (
               <FadeIn key={game.slug} delay={index * 0.15}>
-                <GameCard game={game} />
+                <GameCard
+                  game={game}
+                  isComingSoon={["dota2", "valorant"].includes(game.slug)}
+                />
               </FadeIn>
             ))}
           </div>

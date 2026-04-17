@@ -38,7 +38,7 @@ export function withAuth(handler: AuthHandler) {
 //     limiter = new Ratelimit({
 //       redis,
 //       limiter: Ratelimit.slidingWindow(max, window),
-//       prefix: "@boostpro/ratelimit",
+//       prefix: "@carryme/ratelimit",
 //     });
 //     limiters.set(key, limiter);
 //   }

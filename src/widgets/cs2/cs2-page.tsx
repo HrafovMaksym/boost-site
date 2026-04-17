@@ -24,7 +24,7 @@ export function CS2Page() {
             subtitle="Choose the service that fits your needs. All services include account safety guarantees."
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {cs2.services.map((service) => (
               <ServiceCard key={service.title} service={service} />
             ))}

@@ -1,16 +1,21 @@
 "use server";
 
+import { getSession } from "@/features/auth/model/actions";
 import { User } from "./types";
-import { serverFetch, ServerFetchError } from "@/shared/api/server-fetch";
 
 export async function getUser(): Promise<User | null> {
   try {
-    return null;
-    // return await serverFetch<User>("/auth/me");
+    const session = await getSession();
+    if (!session) return null;
+
+    return {
+      id: session.id,
+      email: session.email,
+      name: session.name,
+      role: session.role,
+      createdAt: session.createdAt,
+    };
   } catch (error) {
-    if (error instanceof ServerFetchError && error.status === 401) {
-      return null;
-    }
     console.error(
       "Error fetching user:",
       error instanceof Error ? error.message : error,
