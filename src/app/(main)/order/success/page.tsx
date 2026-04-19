@@ -23,10 +23,10 @@ export default async function OrderSuccessPage({
 }) {
   const { session_id } = await searchParams;
 
-  if (!session_id) redirect("/");
+  if (!session_id) redirect("/cs2/faceit");
 
   const isValid = await verifyCheckoutSession(session_id);
-  if (!isValid) redirect("/");
+  if (!isValid) redirect("/cs2/faceit");
 
   return (
     <div className="min-h-screen bg-[#070a10] flex items-center justify-center p-4">
@@ -53,8 +53,8 @@ export default async function OrderSuccessPage({
               Payment Successful
             </h1>
             <p className="text-gray-400 text-sm max-w-sm mx-auto leading-relaxed">
-              Your boost order has been confirmed. Our team will start working on
-              it shortly.
+              Your boost order has been confirmed. Our team will start working
+              on it shortly.
             </p>
 
             <div className="mt-4 inline-flex items-center gap-2 bg-[#161b28] border border-[#2d3446] rounded-full px-4 py-1.5">
