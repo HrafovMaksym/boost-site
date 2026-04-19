@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/shared/config/stripe";
+import Stripe from "stripe";
 import prisma from "@/shared/lib/prisma/prisma";
 import { sendMail } from "@/shared/server-actions/mail/mailer";
-import type Stripe from "stripe";
-
 export async function POST(req: Request) {
   const body = await req.text();
   const signature = req.headers.get("stripe-signature")!;
-
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
   let event: Stripe.Event;
 
   try {

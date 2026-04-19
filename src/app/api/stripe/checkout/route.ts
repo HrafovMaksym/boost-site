@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/shared/config/stripe";
+import Stripe from "stripe";
 import { getTokenFromRequest } from "@/shared/api/get-token";
 import { validateAndCalculatePrice } from "@/shared/lib/pricing/pricing";
 
@@ -39,6 +39,8 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
