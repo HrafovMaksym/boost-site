@@ -29,47 +29,42 @@ export function DiscordCTA() {
 
       <Container className="relative z-10">
         <FadeIn duration={0.6}>
-        <div className="relative rounded-[var(--radius-xl)] border border-border overflow-hidden">
-          {/* Inner gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#5865F2]/10 via-bg-card to-[#06b6d4]/5" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(88,101,242,0.15),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(6,182,212,0.08),transparent_60%)]" />
+          <div className="relative rounded-[var(--radius-xl)] border border-border overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#5865F2]/10 via-bg-card to-[#06b6d4]/5" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(88,101,242,0.15),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(6,182,212,0.08),transparent_60%)]" />
 
-          {/* Animated floating dots */}
-          <div className="absolute top-6 right-12 w-2 h-2 rounded-full bg-[#5865F2]/40 animate-pulse" />
-          <div className="absolute top-16 right-28 w-1.5 h-1.5 rounded-full bg-accent-secondary/30 animate-pulse [animation-delay:1s]" />
-          <div className="absolute bottom-10 left-16 w-2 h-2 rounded-full bg-[#5865F2]/30 animate-pulse [animation-delay:0.5s]" />
-          <div className="absolute bottom-20 left-40 w-1 h-1 rounded-full bg-accent-secondary/40 animate-pulse [animation-delay:1.5s]" />
+            <div className="absolute top-6 right-12 w-2 h-2 rounded-full bg-[#5865F2]/40 animate-pulse" />
+            <div className="absolute top-16 right-28 w-1.5 h-1.5 rounded-full bg-accent-secondary/30 animate-pulse [animation-delay:1s]" />
+            <div className="absolute bottom-10 left-16 w-2 h-2 rounded-full bg-[#5865F2]/30 animate-pulse [animation-delay:0.5s]" />
+            <div className="absolute bottom-20 left-40 w-1 h-1 rounded-full bg-accent-secondary/40 animate-pulse [animation-delay:1.5s]" />
 
-          <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-16 px-8 py-12 md:px-14 md:py-16">
-            {/* Left side — icon & visual */}
-            <div className="flex-shrink-0">
-              <div className="relative">
-                {/* Glow ring */}
-                <div className="absolute inset-0 rounded-full bg-[#5865F2]/20 blur-xl scale-125" />
-                <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-[#5865F2] to-[#4752C4] flex items-center justify-center shadow-[0_0_40px_rgba(88,101,242,0.35)]">
-                  <DiscordIcon className="w-12 h-12 md:w-16 md:h-16 text-white" />
+            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-16 px-8 py-12 md:px-14 md:py-16">
+              <div className="flex-shrink-0">
+                <div className="relative">
+                  <div className="absolute inset-0 rounded-full bg-[#5865F2]/20 blur-xl scale-125" />
+                  <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-[#5865F2] to-[#4752C4] flex items-center justify-center shadow-[0_0_40px_rgba(88,101,242,0.35)]">
+                    <DiscordIcon className="w-12 h-12 md:w-16 md:h-16 text-white" />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Right side — content */}
-            <div className="flex-1 text-center lg:text-left">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary mb-4 leading-tight">
-                Join Our <span className="text-[#5865F2]">Community</span>
-              </h2>
-              <p className="text-text-secondary text-base md:text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
-                Have questions or need help? Connect with our admins, chat with
-                other players, get exclusive deals, and stay updated — all in
-                our Discord server.
-              </p>
+              <div className="flex-1 text-center lg:text-left">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary mb-4 leading-tight">
+                  Join Our <span className="text-[#5865F2]">Community</span>
+                </h2>
+                <p className="text-text-secondary text-base md:text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+                  Have questions or need help? Connect with our admins, chat
+                  with other players, get exclusive deals, and stay updated —
+                  all in our Discord server.
+                </p>
 
-              <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-                <a
-                  href="https://discord.gg/UBDf5G34"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="
+                <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                  <a
+                    href="https://discord.gg/UBDf5G34"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="
                     inline-flex items-center justify-center gap-3
                     px-8 py-4 text-lg font-semibold text-white
                     bg-[#5865F2] hover:bg-[#4752C4]
@@ -79,17 +74,17 @@ export function DiscordCTA() {
                     hover:-translate-y-0.5
                     cursor-pointer select-none
                   "
-                >
-                  <DiscordIcon className="w-5 h-5" />
-                  Join Discord
-                </a>
-                <span className="text-text-muted text-sm">
-                  2,000+ members online
-                </span>
+                  >
+                    <DiscordIcon className="w-5 h-5" />
+                    Join Discord
+                  </a>
+                  <span className="text-text-muted text-sm">
+                    2,000+ members online
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
         </FadeIn>
       </Container>
     </section>

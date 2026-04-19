@@ -11,15 +11,17 @@ interface GameCardProps {
 export function GameCard({ game, isComingSoon }: GameCardProps) {
   const content = (
     <>
-      <Image
-        src={game.backgroundImage}
-        alt={game.name}
-        fill
-        className={`object-cover transition-transform duration-700 ${
-          isComingSoon ? "brightness-[0.3]" : "group-hover:scale-105"
-        }`}
-        sizes="(max-width: 768px) 100vw, 33vw"
-      />
+      <div className="absolute inset-0 bg-bg-card overflow-hidden">
+        <Image
+          src={game.backgroundImage}
+          alt={game.name}
+          fill
+          className={`object-cover transition-transform duration-700 will-change-transform ${
+            isComingSoon ? "brightness-[0.3]" : "group-hover:scale-[1.03]"
+          }`}
+          sizes="(max-width: 768px) 100vw, 33vw"
+        />
+      </div>
 
       <div
         className={`absolute inset-0 bg-gradient-to-t from-[#080d1e] via-[#080d1e]/85 to-[#080d1e]/30 backdrop-blur-[2px] transition-opacity duration-500 ${
@@ -96,7 +98,7 @@ export function GameCard({ game, isComingSoon }: GameCardProps) {
 
   if (isComingSoon) {
     return (
-      <div className="group relative block overflow-hidden rounded-[var(--radius-lg)] border border-border hover:border-accent-primary/30 transition-all duration-500 hover:shadow-[var(--shadow-glow)]">
+      <div className="group relative block overflow-hidden rounded-[var(--radius-lg)] border border-border hover:border-accent-primary/30 transition-all duration-500 hover:shadow-[var(--shadow-glow)] bg-[#080d1e] transform-gpu">
         {content}
       </div>
     );
@@ -105,7 +107,7 @@ export function GameCard({ game, isComingSoon }: GameCardProps) {
   return (
     <Link
       href={`/${game.slug}`}
-      className="group relative block overflow-hidden rounded-[var(--radius-lg)] border border-border hover:border-border-hover transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-glow)]"
+      className="group relative block overflow-hidden rounded-[var(--radius-lg)] border border-border hover:border-border-hover transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-glow)] h-full bg-[#080d1e] transform-gpu"
     >
       {content}
     </Link>

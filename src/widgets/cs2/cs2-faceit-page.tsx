@@ -1,8 +1,7 @@
 "use client";
 import { Container } from "@/shared/ui";
 import { HeroSection } from "@/features/hero-section/ui/hero-section";
-import { OrderForm } from "@/features/order-form/order-form";
-import { CS2_FACEIT_CONFIG } from "@/features/order-form/configs";
+import { FaceitOrderForm } from "@/features/order-form/ui/faceit-order-form";
 
 export function CS2FaceitPage() {
   return (
@@ -17,10 +16,13 @@ export function CS2FaceitPage() {
         secondaryCtaHref="/cs2"
       />
 
-      <section id="order" className="py-20 md:py-28 bg-bg-secondary">
+      <section
+        id="order"
+        className="py-20 md:py-28 bg-bg-secondary overflow-hidden"
+      >
         <Container>
-          <div className="max-w-3xl mx-auto">
-            <OrderForm config={CS2_FACEIT_CONFIG} />
+          <div className="w-full">
+            <FaceitOrderForm />
           </div>
         </Container>
       </section>

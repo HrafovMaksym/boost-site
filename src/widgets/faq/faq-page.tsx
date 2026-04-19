@@ -74,7 +74,9 @@ function FaqItem({ label, option, index }: FaqItemProps) {
           <div className="flex items-center justify-between p-5 md:p-6">
             <h3
               className={`text-sm md:text-base font-semibold pr-4 transition-colors duration-300 ${
-                isOpen ? "text-text-primary" : "text-text-secondary group-hover:text-text-primary"
+                isOpen
+                  ? "text-text-primary"
+                  : "text-text-secondary group-hover:text-text-primary"
               }`}
             >
               {label}
@@ -135,7 +137,6 @@ export function FaqPage() {
         </FadeIn>
 
         <div className="max-w-3xl mx-auto">
-          {/* General FAQ */}
           <FadeIn delay={0.1}>
             <div className="mb-4">
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-primary/10 border border-accent-primary/20 text-accent-primary text-xs font-semibold tracking-wide uppercase">
@@ -155,7 +156,6 @@ export function FaqPage() {
             ))}
           </div>
 
-          {/* Boosting FAQ */}
           <FadeIn delay={0.1}>
             <div className="mb-4">
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-secondary/10 border border-accent-secondary/20 text-accent-secondary text-xs font-semibold tracking-wide uppercase">

@@ -3,7 +3,14 @@ export type LoginData = {
   password: string;
 };
 export type LoginResponse = {
-  message: string;
+  message?: string;
+  accessToken: string;
+  user: {
+    id: string;
+    email: string;
+    name: string | null;
+    createdAt: Date;
+  };
 };
 
 export type RegistrationData = {
@@ -31,7 +38,15 @@ export type VerifyData = {
   token: string;
 };
 export type VerifyResponse = {
-  valid: boolean;
+  message?: string;
+  accessToken?: string;
+  user?: {
+    id: string;
+    email: string;
+    name: string | null;
+    createdAt: Date;
+  };
+  valid?: boolean;
 };
 export type ResetPasswordData = {
   password: string;

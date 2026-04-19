@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Container } from "@/shared/ui";
 import { SITE_CONFIG } from "@/entities/games";
@@ -14,6 +15,7 @@ export function Header() {
   const { user } = useAppSelector((state) => state.user);
   const [isOpen, setIsOpen] = useState(false);
   const [dropdown, setDropdown] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg-primary/80 backdrop-blur-xl">
@@ -24,15 +26,25 @@ export function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-2">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="px-4 py-2 text-text-secondary hover:text-white rounded-xl hover:bg-bg-card transition"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const isActive =
+                pathname === link.href ||
+                (link.href !== "/" && pathname.startsWith(link.href));
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-4 py-2 rounded-xl transition-all ${
+                    isActive
+                      ? "text-white bg-white/10 shadow-sm"
+                      : "text-text-secondary hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
@@ -95,13 +107,13 @@ export function Header() {
             className="md:hidden flex flex-col gap-1.5 p-2"
           >
             <span
-              className={`block w-6 h-0.5 bg-white ${isOpen ? "rotate-45 translate-y-2" : ""}`}
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${isOpen ? "rotate-45 translate-y-2" : ""}`}
             />
             <span
-              className={`block w-6 h-0.5 bg-white ${isOpen ? "opacity-0" : ""}`}
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${isOpen ? "opacity-0" : ""}`}
             />
             <span
-              className={`block w-6 h-0.5 bg-white ${isOpen ? "-rotate-45 -translate-y-2" : ""}`}
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${isOpen ? "-rotate-45 -translate-y-2" : ""}`}
             />
           </button>
         </div>
@@ -114,17 +126,67 @@ export function Header() {
               exit={{ height: 0, opacity: 0 }}
               className="md:hidden overflow-hidden"
             >
-              <nav className="flex flex-col gap-2 py-4">
-                {NAV_LINKS.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="px-4 py-3 rounded-lg hover:bg-bg-card"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+              <nav className="flex flex-col gap-1 py-4 border-t border-border">
+                {NAV_LINKS.map((link) => {
+                  const isActive =
+                    pathname === link.href ||
+                    (link.href !== "/" && pathname.startsWith(link.href));
+
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={`px-4 py-3 rounded-lg transition-colors ${
+                        isActive
+                          ? "text-white bg-white/10"
+                          : "text-text-secondary hover:text-white hover:bg-white/5"
+                      }`}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
+
+                <div className="h-px bg-border my-2" />
+
+                {!user ? (
+                  <div className="flex flex-col gap-2 px-4 pt-2 pb-1">
+                    <Link
+                      href="/login"
+                      className="w-full py-3 text-center text-sm font-medium text-text-secondary hover:text-white rounded-xl border border-border hover:border-border-hover transition-all"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/registration"
+                      className="w-full py-3 text-center rounded-xl bg-accent-primary hover:bg-accent-primary-hover text-white text-sm font-semibold transition-all"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Registration
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-1">
+                    <Link
+                      href="/profile"
+                      className="px-4 py-3 rounded-lg hover:bg-bg-card text-text-secondary hover:text-white transition-colors"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setIsOpen(false);
+                        logout();
+                      }}
+                      className="px-4 py-3 rounded-lg hover:bg-bg-card text-red-400 text-left transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
               </nav>
             </motion.div>
           )}

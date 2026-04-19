@@ -64,7 +64,12 @@ export async function GET(req: Request) {
 
     const response = NextResponse.json({
       accessToken,
-      user: { id: user.id, email: user.email, name: user.name },
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        createdAt: user.createdAt,
+      },
     });
 
     response.cookies.set("access_token", accessToken, {

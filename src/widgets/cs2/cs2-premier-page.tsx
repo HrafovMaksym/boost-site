@@ -1,7 +1,5 @@
 import { Container, SectionTitle } from "@/shared/ui";
 import { HeroSection } from "@/features/hero-section/ui/hero-section";
-import { OrderForm } from "@/features/order-form/order-form";
-import { CS2_PREMIER_CONFIG } from "@/features/order-form/configs";
 
 export function CS2PremierPage() {
   return (
@@ -15,14 +13,6 @@ export function CS2PremierPage() {
         secondaryCtaText="Back to CS2"
         secondaryCtaHref="/cs2"
       />
-
-      <section id="order" className="py-20 md:py-28 bg-bg-secondary">
-        <Container>
-          <div className="max-w-3xl mx-auto">
-            <OrderForm config={CS2_PREMIER_CONFIG} />
-          </div>
-        </Container>
-      </section>
 
       <section className="py-20 md:py-28">
         <Container>

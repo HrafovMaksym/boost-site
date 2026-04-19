@@ -52,15 +52,6 @@ const Profile = () => {
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-2">
               <span className="text-xs font-bold text-text-muted uppercase tracking-widest">
-                Role
-              </span>
-              <div className="inline-flex px-2.5 py-0.5 rounded-full bg-accent-primary/10 border border-accent-primary/20 text-accent-primary text-xs font-bold uppercase">
-                {user?.role}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <span className="text-xs font-bold text-text-muted uppercase tracking-widest">
                 Joined
               </span>
               <p className="text-text-primary font-semibold text-lg">

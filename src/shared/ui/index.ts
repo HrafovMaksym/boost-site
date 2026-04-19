@@ -3,7 +3,7 @@ export { Container } from "./container/container";
 export { Card } from "./card/card";
 export { SectionTitle } from "./section-title/section-title";
 export { ButtonBack } from "./buttons/button-back";
-export { ButtonCancel } from "./buttons/button-cancel";
+
 export { ButtonDefault } from "./buttons/button-default";
 export { InputForm } from "./inputs/input-auth-form";
 export { Title } from "./text/title";

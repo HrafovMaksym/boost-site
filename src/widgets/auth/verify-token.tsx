@@ -143,7 +143,7 @@ const VerifyToken = () => {
               `}
             >
               <span className="relative z-10">
-                {isRedirecting ? "Redirecting..." : "Continue to Login"}
+                {isRedirecting ? "Redirecting..." : "Continue to Home"}
               </span>
               {!isRedirecting && (
                 <ArrowRight

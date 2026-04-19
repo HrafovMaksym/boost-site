@@ -33,13 +33,16 @@ export const SelectForm = ({
   const errorMessage = errors[errorType]?.message;
   const errorT = errorMessage ? String(errorMessage) : "";
 
-  // Find the label for the selected value
-  const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label;
+  const selectedLabel = options.find(
+    (opt) => opt.value === selectedValue,
+  )?.label;
 
-  // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -51,7 +54,6 @@ export const SelectForm = ({
     setSelectedValue(value);
     setIsOpen(false);
 
-    // Update the native select and trigger domestic change event for react-hook-form
     if (selectRef.current) {
       selectRef.current.value = value;
       const event = new Event("change", { bubbles: true });
@@ -61,14 +63,18 @@ export const SelectForm = ({
 
   return (
     <div className="relative w-full mb-6" ref={containerRef}>
-      {/* Label */}
-      <label className={`block text-sm font-semibold mb-2 ml-1 transition-colors duration-200 ${
-        isError ? "text-red-400" : isOpen ? "text-accent-primary" : "text-text-secondary"
-      }`}>
+      <label
+        className={`block text-sm font-semibold mb-2 ml-1 transition-colors duration-200 ${
+          isError
+            ? "text-red-400"
+            : isOpen
+              ? "text-accent-primary"
+              : "text-text-secondary"
+        }`}
+      >
         {label}
       </label>
 
-      {/* Custom Trigger */}
       <div
         onClick={() => setIsOpen(!isOpen)}
         className={`
@@ -76,34 +82,37 @@ export const SelectForm = ({
           rounded-[var(--radius-md)] border cursor-pointer
           bg-bg-card/40 backdrop-blur-md px-4 py-3.5
           transition-all duration-300 group
-          ${isError 
-            ? "border-red-500/50 hover:border-red-400/80 shadow-[0_0_15px_-5px_rgba(239,68,68,0.2)]" 
-            : isOpen
-              ? "border-accent-primary/70 ring-2 ring-accent-primary/20 shadow-[0_0_20px_-5px_rgba(124,58,237,0.3)]"
-              : "border-border/60 hover:border-border-hover shadow-sm"
+          ${
+            isError
+              ? "border-red-500/50 hover:border-red-400/80 shadow-[0_0_15px_-5px_rgba(239,68,68,0.2)]"
+              : isOpen
+                ? "border-accent-primary/70 ring-2 ring-accent-primary/20 shadow-[0_0_20px_-5px_rgba(124,58,237,0.3)]"
+                : "border-border/60 hover:border-border-hover shadow-sm"
           }
         `}
       >
-        <span className={`text-base transition-colors duration-200 ${
-          selectedValue ? "text-text-primary" : "text-text-muted"
-        }`}>
+        <span
+          className={`text-base transition-colors duration-200 ${
+            selectedValue ? "text-text-primary" : "text-text-muted"
+          }`}
+        >
           {selectedLabel || "Select an option..."}
         </span>
-        
+
         <ChevronDown
           size={18}
           className={`transition-all duration-300 ${
-            isOpen ? "rotate-180 text-accent-primary" : "text-text-muted group-hover:text-text-secondary"
+            isOpen
+              ? "rotate-180 text-accent-primary"
+              : "text-text-muted group-hover:text-text-secondary"
           }`}
         />
 
-        {/* Shine effect on hover */}
         <div className="absolute inset-0 rounded-[var(--radius-md)] opacity-0 group-hover:opacity-100 pointer-events-none overflow-hidden transition-opacity">
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
         </div>
       </div>
 
-      {/* Hidden Native Select for react-hook-form */}
       <select
         {...register}
         ref={(el) => {
@@ -121,7 +130,6 @@ export const SelectForm = ({
         ))}
       </select>
 
-      {/* Custom Dropdown List */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -141,9 +149,10 @@ export const SelectForm = ({
                     className={`
                       group flex items-center justify-between px-3 py-2.5 rounded-lg
                       cursor-pointer transition-all duration-200 mb-0.5 last:mb-0
-                      ${isSelected 
-                        ? "bg-accent-primary/20 text-accent-primary font-semibold" 
-                        : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
+                      ${
+                        isSelected
+                          ? "bg-accent-primary/20 text-accent-primary font-semibold"
+                          : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
                       }
                     `}
                   >
@@ -165,7 +174,6 @@ export const SelectForm = ({
         )}
       </AnimatePresence>
 
-      {/* Error Message */}
       <AnimatePresence>
         {isError && errorT && (
           <motion.p

@@ -100,7 +100,6 @@ export function TestimonialsSection() {
           {testimonials.map((t) => (
             <SwiperSlide key={t.name}>
               <div className="h-full p-6 md:p-8 rounded-[var(--radius-lg)] bg-bg-card border border-border hover:border-border-hover transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card)] flex flex-col">
-                {/* Header: avatar + info */}
                 <div className="flex items-center gap-4 mb-5">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                     {t.avatar}
@@ -109,13 +108,14 @@ export function TestimonialsSection() {
                     <div className="font-semibold text-text-primary text-base truncate">
                       {t.name}
                     </div>
-                    <div className={`text-xs font-medium ${gameColors[t.game] ?? "text-text-muted"}`}>
+                    <div
+                      className={`text-xs font-medium ${gameColors[t.game] ?? "text-text-muted"}`}
+                    >
                       {t.game}
                     </div>
                   </div>
                 </div>
 
-                {/* Stars */}
                 <div className="flex gap-1 mb-3">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
@@ -130,12 +130,10 @@ export function TestimonialsSection() {
                   ))}
                 </div>
 
-                {/* Rank badge */}
                 <div className="inline-flex self-start px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-text-secondary mb-4">
                   {t.rank}
                 </div>
 
-                {/* Text */}
                 <p className="text-text-secondary text-sm leading-relaxed flex-1">
                   &ldquo;{t.text}&rdquo;
                 </p>

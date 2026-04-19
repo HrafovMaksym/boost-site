@@ -31,16 +31,12 @@ export const registration = createAsyncThunk<
   RegistrationResponse,
   RegistrationData,
   { rejectValue: string }
->("auth/register", async ({ email, password }: RegistrationData, thunkAPI) => {
+>("auth/register", async (data: RegistrationData, thunkAPI) => {
   try {
-    const { data } = await authApi.registration({
-      email,
-      password,
-    });
-
-    return data;
+    const response = await authApi.registration(data);
+    return response.data;
   } catch (err) {
-    const error = err as AxiosError<{ message: string; status: number }>;
+    const error = err as AxiosError<{ message: string }>;
     const message = error.response?.data?.message || "Registration failed";
     return thunkAPI.rejectWithValue(message);
   }
@@ -50,28 +46,27 @@ export const verifyRegistration = createAsyncThunk<
   VerifyResponse,
   VerifyData,
   { rejectValue: string }
->("auth/verifyRegistration", async ({ token }: { token: string }, thunkAPI) => {
+>("auth/verifyRegistration", async (data: VerifyData, thunkAPI) => {
   try {
-    const { data } = await authApi.verifyRegistration({ token });
-
-    return data;
+    const response = await authApi.verifyRegistration(data);
+    return response.data;
   } catch (err) {
-    const error = err as AxiosError<{ message: string; status: number }>;
+    const error = err as AxiosError<{ message: string }>;
     const message = error.response?.data?.message || "Token is not valid";
     return thunkAPI.rejectWithValue(message);
   }
 });
+
 export const login = createAsyncThunk<
   LoginResponse,
   LoginData,
   { rejectValue: string }
->("auth/login", async ({ email, password }: LoginData, thunkAPI) => {
+>("auth/login", async (data: LoginData, thunkAPI) => {
   try {
-    const { data } = await authApi.login({ email, password });
-
-    return data;
+    const response = await authApi.login(data);
+    return response.data;
   } catch (err) {
-    const error = err as AxiosError<{ message: string; status: number }>;
+    const error = err as AxiosError<{ message: string }>;
     const message = error.response?.data?.message || "Login failed";
     return thunkAPI.rejectWithValue(message);
   }
@@ -81,54 +76,42 @@ export const forgotPassword = createAsyncThunk<
   ForgotPasswordResponse,
   ForgotPasswordData,
   { rejectValue: string }
->("auth/forgotPassword", async ({ email }: { email: string }, thunkAPI) => {
+>("auth/forgotPassword", async (data: ForgotPasswordData, thunkAPI) => {
   try {
-    const { data } = await authApi.forgotPassword({ email });
-
-    return data;
+    const response = await authApi.forgotPassword(data);
+    return response.data;
   } catch (err) {
-    const error = err as AxiosError<{ message: string; status: number }>;
+    const error = err as AxiosError<{ message: string }>;
     const message = error.response?.data?.message || "Send Email failed";
     return thunkAPI.rejectWithValue(message);
   }
 });
+
 export const resetPassword = createAsyncThunk<
   ResetPasswordResponse,
   ResetPasswordData,
   { rejectValue: string }
->(
-  "auth/resetPassword",
-  async (
-    { token, password }: { token: string; password: string },
-    thunkAPI,
-  ) => {
-    try {
-      const { data } = await authApi.resetPassword({
-        token,
-        password,
-      });
-
-      return data;
-    } catch (err) {
-      const error = err as AxiosError<{ message: string; status: number }>;
-      const message =
-        error.response?.data?.message || "Recover password failed";
-      return thunkAPI.rejectWithValue(message);
-    }
-  },
-);
+>("auth/resetPassword", async (data: ResetPasswordData, thunkAPI) => {
+  try {
+    const response = await authApi.resetPassword(data);
+    return response.data;
+  } catch (err) {
+    const error = err as AxiosError<{ message: string }>;
+    const message = error.response?.data?.message || "Recover password failed";
+    return thunkAPI.rejectWithValue(message);
+  }
+});
 
 export const verifyToken = createAsyncThunk<
   VerifyResponse,
   VerifyData,
   { rejectValue: string }
->("auth/verifyToken", async ({ token }: { token: string }, thunkAPI) => {
+>("auth/verifyToken", async (data: VerifyData, thunkAPI) => {
   try {
-    const { data } = await authApi.validateToken({ token });
-
-    return data;
+    const response = await authApi.validateToken(data);
+    return response.data;
   } catch (err) {
-    const error = err as AxiosError<{ message: string; status: number }>;
+    const error = err as AxiosError<{ message: string }>;
     const message = error.response?.data?.message || "Token is not valid";
     return thunkAPI.rejectWithValue(message);
   }
@@ -147,14 +130,10 @@ const authSlice = createSlice({
       .addCase(registration.fulfilled, (state) => {
         state.status = Status.SUCCEEDED;
       })
-      .addCase(
-        registration.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
-          state.status = Status.FAILED;
-
-          state.error = action.payload || "Something went wrong";
-        },
-      )
+      .addCase(registration.rejected, (state, action) => {
+        state.status = Status.FAILED;
+        state.error = action.payload || "Something went wrong";
+      })
       .addCase(login.pending, (state) => {
         state.status = Status.LOADING;
         state.error = null;
@@ -163,14 +142,10 @@ const authSlice = createSlice({
         state.status = Status.SUCCEEDED;
         state.error = null;
       })
-      .addCase(
-        login.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
-          state.status = Status.FAILED;
-
-          state.error = action.payload || "Something went wrong";
-        },
-      )
+      .addCase(login.rejected, (state, action) => {
+        state.status = Status.FAILED;
+        state.error = action.payload || "Something went wrong";
+      })
       .addCase(forgotPassword.pending, (state) => {
         state.status = Status.LOADING;
         state.error = null;
@@ -178,14 +153,10 @@ const authSlice = createSlice({
       .addCase(forgotPassword.fulfilled, (state) => {
         state.status = Status.SUCCEEDED;
       })
-      .addCase(
-        forgotPassword.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
-          state.status = Status.FAILED;
-
-          state.error = action.payload || "Something went wrong";
-        },
-      )
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.status = Status.FAILED;
+        state.error = action.payload || "Something went wrong";
+      })
       .addCase(resetPassword.pending, (state) => {
         state.status = Status.LOADING;
         state.error = null;
@@ -193,14 +164,10 @@ const authSlice = createSlice({
       .addCase(resetPassword.fulfilled, (state) => {
         state.status = Status.SUCCEEDED;
       })
-      .addCase(
-        resetPassword.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
-          state.status = Status.FAILED;
-
-          state.error = action.payload || "Something went wrong";
-        },
-      )
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.status = Status.FAILED;
+        state.error = action.payload || "Something went wrong";
+      })
       .addCase(verifyToken.pending, (state) => {
         state.status = Status.LOADING;
         state.error = null;
@@ -208,14 +175,10 @@ const authSlice = createSlice({
       .addCase(verifyToken.fulfilled, (state) => {
         state.status = Status.SUCCEEDED;
       })
-      .addCase(
-        verifyToken.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
-          state.status = Status.FAILED;
-
-          state.error = action.payload || "Something went wrong";
-        },
-      )
+      .addCase(verifyToken.rejected, (state, action) => {
+        state.status = Status.FAILED;
+        state.error = action.payload || "Something went wrong";
+      })
       .addCase(verifyRegistration.pending, (state) => {
         state.status = Status.LOADING;
         state.error = null;
@@ -223,14 +186,10 @@ const authSlice = createSlice({
       .addCase(verifyRegistration.fulfilled, (state) => {
         state.status = Status.SUCCEEDED;
       })
-      .addCase(
-        verifyRegistration.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
-          state.status = Status.FAILED;
-
-          state.error = action.payload || "Something went wrong";
-        },
-      );
+      .addCase(verifyRegistration.rejected, (state, action) => {
+        state.status = Status.FAILED;
+        state.error = action.payload || "Something went wrong";
+      });
   },
 });
 

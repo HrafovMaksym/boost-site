@@ -138,9 +138,9 @@ const RegistrationForm = () => {
         </span>
         <Link
           href="/login"
-          className="cursor-pointer text-[15px] text-[white] underline opacity-90 transition-all duration-300 ease-in-out hover:text-[var(--color-primary-hover)] hover:opacity-100"
+          className="text-sm font-medium text-accent-primary transition-colors duration-300 hover:text-accent-primary-hover hover:underline"
         >
-          Log In
+          Sign Up
         </Link>
       </div>
     </form>

@@ -18,7 +18,6 @@ export function PrivacyPolicyPage() {
           <FadeIn delay={0.1}>
             <div className="bg-bg-card/30 border border-border rounded-[var(--radius-lg)] p-6 md:p-10 backdrop-blur-sm shadow-xl">
               <div className="space-y-10 text-text-secondary leading-relaxed">
-                {/* Section 1 */}
                 <section>
                   <h2 className="text-xl md:text-2xl font-bold text-text-primary mb-4 flex items-center gap-3">
                     <span className="w-8 h-8 rounded-lg bg-accent-primary/20 text-accent-primary flex items-center justify-center text-sm font-bold">
@@ -45,7 +44,6 @@ export function PrivacyPolicyPage() {
                   </div>
                 </section>
 
-                {/* Section 2 */}
                 <section>
                   <h2 className="text-xl md:text-2xl font-bold text-text-primary mb-4 flex items-center gap-3">
                     <span className="w-8 h-8 rounded-lg bg-accent-primary/20 text-accent-primary flex items-center justify-center text-sm font-bold">
@@ -110,7 +108,6 @@ export function PrivacyPolicyPage() {
                   </div>
                 </section>
 
-                {/* Section 3 */}
                 <section>
                   <h2 className="text-xl md:text-2xl font-bold text-text-primary mb-4 flex items-center gap-3">
                     <span className="w-8 h-8 rounded-lg bg-accent-primary/20 text-accent-primary flex items-center justify-center text-sm font-bold">
@@ -126,7 +123,6 @@ export function PrivacyPolicyPage() {
                   </p>
                 </section>
 
-                {/* Section 4 */}
                 <section>
                   <h2 className="text-xl md:text-2xl font-bold text-text-primary mb-4 flex items-center gap-3">
                     <span className="w-8 h-8 rounded-lg bg-accent-primary/20 text-accent-primary flex items-center justify-center text-sm font-bold">
