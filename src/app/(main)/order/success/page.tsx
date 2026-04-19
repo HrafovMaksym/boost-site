@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { verifyCheckoutSession } from "@/shared/server-actions/verify-checkout";
-import { CheckCircle, ArrowRight } from "lucide-react";
+import { CheckCircle, ArrowRight, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { Container } from "@/shared/ui";
 
 function DiscordIcon({ className }: { className?: string }) {
   return (
@@ -29,92 +30,117 @@ export default async function OrderSuccessPage({
   if (!isValid) redirect("/cs2/faceit");
 
   return (
-    <div className="min-h-screen bg-[#070a10] flex items-center justify-center p-4">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-green-500/5 blur-[150px]" />
-        <div className="absolute bottom-1/3 left-1/3 w-[400px] h-[400px] rounded-full bg-[#5865F2]/5 blur-[120px]" />
+    <section className="min-h-[calc(100vh-var(--header-height))] flex items-center py-14 md:py-20 relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none">
+        <div
+          className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full opacity-10 blur-[120px]"
+          style={{ background: "var(--accent-primary)" }}
+        />
+        <div
+          className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full opacity-8 blur-[100px]"
+          style={{ background: "var(--accent-secondary)" }}
+        />
+        <div
+          className="absolute top-1/2 left-1/4 w-[300px] h-[300px] rounded-full opacity-6 blur-[100px]"
+          style={{ background: "#5865F2" }}
+        />
       </div>
 
-      <div className="relative w-full max-w-lg">
-        <div className="bg-[#0b0e16] border border-[#1f2330] rounded-[32px] overflow-hidden shadow-2xl">
-          <div className="bg-gradient-to-br from-green-500/10 via-transparent to-emerald-500/5 p-10 text-center border-b border-[#1f2330]">
-            <div className="relative inline-flex mb-6">
-              <div className="absolute inset-0 rounded-full bg-green-500/20 blur-xl scale-150" />
-              <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-[0_0_40px_rgba(34,197,94,0.3)]">
-                <CheckCircle
-                  size={40}
-                  className="text-white"
-                  strokeWidth={2.5}
-                />
-              </div>
-            </div>
+      <Container className="relative z-10">
+        <div className="max-w-xl mx-auto">
+          <div className="rounded-[var(--radius-xl)] border border-border overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-primary)]/5 via-bg-card to-[var(--accent-secondary)]/5" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,58,237,0.08),transparent_60%)]" />
 
-            <h1 className="text-3xl font-black text-white uppercase tracking-tight mb-2">
-              Payment Successful
-            </h1>
-            <p className="text-gray-400 text-sm max-w-sm mx-auto leading-relaxed">
-              Your boost order has been confirmed. Our team will start working
-              on it shortly.
-            </p>
+            <div className="absolute top-6 right-10 w-2 h-2 rounded-full bg-accent-primary/40 animate-pulse" />
+            <div className="absolute top-14 right-24 w-1.5 h-1.5 rounded-full bg-accent-secondary/30 animate-pulse [animation-delay:1s]" />
+            <div className="absolute bottom-8 left-10 w-2 h-2 rounded-full bg-[#5865F2]/30 animate-pulse [animation-delay:0.5s]" />
 
-            <div className="mt-4 inline-flex items-center gap-2 bg-[#161b28] border border-[#2d3446] rounded-full px-4 py-1.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] text-gray-400 font-mono">
-                Session confirmed
-              </span>
-            </div>
-          </div>
-
-          <div className="p-8">
-            <div className="relative mb-6">
-              <div className="absolute -inset-1 bg-gradient-to-r from-[#5865F2] to-[#4752C4] rounded-[20px] blur opacity-20" />
-              <div className="relative bg-[#161b28] border border-[#5865F2]/30 rounded-2xl p-6 text-center">
-                <div className="flex justify-center mb-4">
-                  <div className="w-14 h-14 rounded-full bg-[#5865F2]/20 flex items-center justify-center">
-                    <DiscordIcon className="w-7 h-7 text-[#5865F2]" />
+            <div className="relative z-10">
+              <div className="px-8 pt-12 pb-10 text-center border-b border-border">
+                <div className="relative inline-flex mb-6">
+                  <div
+                    className="absolute inset-0 rounded-full blur-xl scale-150"
+                    style={{ background: "rgba(34, 197, 94, 0.15)" }}
+                  />
+                  <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-[0_0_40px_rgba(34,197,94,0.25)]">
+                    <CheckCircle
+                      size={40}
+                      className="text-white"
+                      strokeWidth={2.5}
+                    />
                   </div>
                 </div>
 
-                <h2 className="text-lg font-black text-white uppercase tracking-tight mb-2">
-                  Join Our Discord
-                </h2>
-                <p className="text-gray-400 text-xs leading-relaxed mb-5 max-w-xs mx-auto">
-                  Connect with your booster, track progress in real-time, and
-                  get instant support from our team.
+                <h1 className="text-3xl md:text-4xl font-bold text-text-primary tracking-tight mb-3">
+                  Payment <span className="gradient-text">Successful</span>
+                </h1>
+                <p className="text-text-secondary text-sm md:text-base leading-relaxed max-w-sm mx-auto">
+                  Your boost order has been confirmed. Our team will start
+                  working on it shortly.
                 </p>
 
-                <a
-                  href="https://discord.gg/ajT7qf2YNN"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-3 bg-[#5865F2] hover:bg-[#4752C4] text-white font-black uppercase tracking-tight text-sm py-4 rounded-xl transition-all duration-300 shadow-[0_0_30px_rgba(88,101,242,0.25)] hover:shadow-[0_0_50px_rgba(88,101,242,0.4)] active:scale-95"
-                >
-                  <DiscordIcon className="w-5 h-5" />
-                  Join Discord Server
-                  <ArrowRight size={16} />
-                </a>
+                <div className="mt-5 inline-flex items-center gap-2 bg-bg-elevated border border-border rounded-full px-4 py-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[11px] text-text-muted font-medium">
+                    Payment verified
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <div className="space-y-3">
-              <Link
-                href="/profile/orders"
-                className="w-full flex items-center justify-center gap-2 bg-[#161b28] hover:bg-[#1c2234] border border-[#2d3446] text-white font-bold text-xs uppercase tracking-tight py-3.5 rounded-xl transition-all active:scale-95"
-              >
-                View My Orders
-                <ArrowRight size={14} />
-              </Link>
+              <div className="p-8 space-y-5">
+                <div className="rounded-[var(--radius-lg)] border border-[#5865F2]/25 bg-bg-card relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#5865F2]/8 to-transparent" />
+                  <div className="relative z-10 p-6 text-center">
+                    <div className="flex justify-center mb-4">
+                      <div className="relative">
+                        <div className="absolute inset-0 rounded-full bg-[#5865F2]/15 blur-lg scale-125" />
+                        <div className="relative w-14 h-14 rounded-full bg-gradient-to-br from-[#5865F2] to-[#4752C4] flex items-center justify-center shadow-[0_0_30px_rgba(88,101,242,0.3)]">
+                          <DiscordIcon className="w-7 h-7 text-white" />
+                        </div>
+                      </div>
+                    </div>
 
-              <Link
-                href="/"
-                className="w-full flex items-center justify-center text-gray-500 hover:text-gray-300 text-xs font-medium py-2 transition-colors"
-              >
-                Back to Home
-              </Link>
+                    <h2 className="text-lg font-bold text-text-primary tracking-tight mb-2">
+                      Join Our <span className="text-[#5865F2]">Discord</span>
+                    </h2>
+                    <p className="text-text-secondary text-xs md:text-sm leading-relaxed mb-5 max-w-xs mx-auto">
+                      Connect with your booster, track progress in real-time,
+                      and get instant support from our team.
+                    </p>
+
+                    <a
+                      href="https://discord.gg/ajT7qf2YNN"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full inline-flex items-center justify-center gap-3 bg-[#5865F2] hover:bg-[#4752C4] text-white font-semibold text-sm py-4 rounded-[var(--radius-md)] transition-all duration-300 shadow-[0_0_30px_rgba(88,101,242,0.25)] hover:shadow-[0_0_50px_rgba(88,101,242,0.4)] hover:-translate-y-0.5 active:scale-[0.98]"
+                    >
+                      <DiscordIcon className="w-5 h-5" />
+                      Join Discord Server
+                      <ExternalLink size={14} />
+                    </a>
+                  </div>
+                </div>
+
+                <Link
+                  href="/profile/orders"
+                  className="w-full flex items-center justify-center gap-2 bg-bg-card hover:bg-bg-card-hover border border-border hover:border-border-hover text-text-primary font-semibold text-sm py-3.5 rounded-[var(--radius-md)] transition-all active:scale-[0.98]"
+                >
+                  View My Orders
+                  <ArrowRight size={14} />
+                </Link>
+
+                <Link
+                  href="/"
+                  className="w-full flex items-center justify-center text-text-muted hover:text-text-secondary text-xs font-medium py-2 transition-colors"
+                >
+                  Back to Home
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </Container>
+    </section>
   );
 }
