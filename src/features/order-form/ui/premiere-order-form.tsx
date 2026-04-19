@@ -76,19 +76,17 @@ export function PremiereOrderForm() {
     if (!user) return;
     setIsOrdering(true);
     try {
-      await api.post("orders", {
+      const { data } = await api.post("stripe/checkout", {
         service: "CS2 Premiere Boost",
         currentValue: currentRating,
         desiredValue: desiredRating,
         options,
         price,
       });
-      toast.success("Order placed successfully! Check your email.");
-      setRatingGain(2000);
+      window.location.href = data.url;
     } catch (error) {
       console.error(error);
-      toast.error("Failed to place order. Please try again.");
-    } finally {
+      toast.error("Failed to proceed to payment. Please try again.");
       setIsOrdering(false);
     }
   };
@@ -316,11 +314,11 @@ export function PremiereOrderForm() {
                 {isOrdering ? (
                   <span className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Processing...
+                    Redirecting to Payment...
                   </span>
                 ) : (
                   <>
-                    Ready to Boost
+                    Proceed to Payment
                     <ChevronRight
                       size={18}
                       className="group-hover:translate-x-1 transition-transform"
