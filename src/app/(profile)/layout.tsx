@@ -21,9 +21,9 @@ export default async function ProfileLayout({
   return (
     <>
       <Header />
-      <main className="flex-1 pt-32 pb-20">
+      <main className="flex-1 pt-28 pb-20 min-h-screen">
         <Container>
-          <div className="flex flex-col md:flex-row gap-8">
+          <div className="flex flex-col lg:flex-row gap-6">
             <ProfileSidebar />
             <div className="flex-1 min-w-0">{children}</div>
           </div>

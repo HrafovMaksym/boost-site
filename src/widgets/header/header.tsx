@@ -52,13 +52,13 @@ export function Header() {
               <>
                 <Link
                   href="/login"
-                  className="px-4 py-2 text-sm text-text-secondary hover:text-white"
+                  className="px-4 py-2 text-sm text-text-secondary hover:text-white transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   href="/registration"
-                  className="px-5 py-2 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-white text-sm font-semibold"
+                  className="px-5 py-2 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-white text-sm font-semibold transition-colors"
                 >
                   Registration
                 </Link>
@@ -67,31 +67,62 @@ export function Header() {
               <div className="relative">
                 <button
                   onClick={() => setDropdown(!dropdown)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-bg-card hover:bg-bg-card-hover transition"
+                  className="flex items-center gap-3 pl-1.5 pr-4 py-1.5 rounded-full bg-bg-card hover:bg-bg-card-hover border border-border transition-all cursor-pointer"
                 >
-                  <div className="w-8 h-8 rounded-full bg-accent-primary flex items-center justify-center text-white font-bold">
-                    U
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent-primary to-blue-600 flex items-center justify-center text-white font-bold text-xs uppercase shadow-md">
+                    {user.name?.charAt(0) || "U"}
                   </div>
-                  <span className="text-sm">User</span>
+                  <span className="text-sm font-semibold text-white max-w-[120px] truncate">
+                    {user.name || "User"}
+                  </span>
+                  <svg
+                    className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${dropdown ? "rotate-180" : ""}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
                 </button>
 
                 <AnimatePresence>
                   {dropdown && (
                     <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-48 rounded-xl bg-bg-card border border-border shadow-lg overflow-hidden"
+                      initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-56 rounded-2xl bg-bg-card border border-border shadow-2xl shadow-black/40 overflow-hidden p-1.5"
                     >
+                      <div className="px-3 py-3 border-b border-border mb-1">
+                        <p className="text-white font-bold text-sm truncate">{user.name}</p>
+                        <p className="text-text-muted text-xs truncate">{user.email}</p>
+                      </div>
+
                       <Link
                         href="/profile"
-                        className="block px-4 py-2 hover:bg-bg-card-hover"
+                        onClick={() => setDropdown(false)}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-text-secondary hover:text-white hover:bg-white/5 transition-colors"
                       >
                         Profile
                       </Link>
+                      <Link
+                        href="/profile/orders"
+                        onClick={() => setDropdown(false)}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-text-secondary hover:text-white hover:bg-white/5 transition-colors"
+                      >
+                        Orders
+                      </Link>
+
+                      <div className="h-px bg-border my-1" />
+
                       <button
-                        onClick={() => logout()}
-                        className="w-full text-left px-4 py-2 hover:bg-bg-card-hover text-red-400"
+                        onClick={() => {
+                          setDropdown(false);
+                          logout();
+                        }}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
                       >
                         Logout
                       </button>
@@ -168,20 +199,37 @@ export function Header() {
                     </Link>
                   </div>
                 ) : (
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1 px-2">
+                    <div className="flex items-center gap-3 px-3 py-3 mb-1">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-primary to-blue-600 flex items-center justify-center text-white font-bold text-sm uppercase shadow-md">
+                        {user.name?.charAt(0) || "U"}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-white font-bold text-sm truncate">{user.name}</p>
+                        <p className="text-text-muted text-xs truncate">{user.email}</p>
+                      </div>
+                    </div>
                     <Link
                       href="/profile"
-                      className="px-4 py-3 rounded-lg hover:bg-bg-card text-text-secondary hover:text-white transition-colors"
+                      className="px-4 py-3 rounded-xl hover:bg-white/5 text-text-secondary hover:text-white transition-colors"
                       onClick={() => setIsOpen(false)}
                     >
                       Profile
                     </Link>
+                    <Link
+                      href="/profile/orders"
+                      className="px-4 py-3 rounded-xl hover:bg-white/5 text-text-secondary hover:text-white transition-colors"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Orders
+                    </Link>
+                    <div className="h-px bg-border my-1 mx-3" />
                     <button
                       onClick={() => {
                         setIsOpen(false);
                         logout();
                       }}
-                      className="px-4 py-3 rounded-lg hover:bg-bg-card text-red-400 text-left transition-colors"
+                      className="px-4 py-3 rounded-xl hover:bg-red-500/10 text-red-400 text-left transition-colors"
                     >
                       Logout
                     </button>

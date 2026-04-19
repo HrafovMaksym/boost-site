@@ -1,5 +1,8 @@
-import { Container, SectionTitle } from "@/shared/ui";
+"use client";
+import { Container } from "@/shared/ui";
 import { HeroSection } from "@/features/hero-section/ui/hero-section";
+import { PremiereOrderForm } from "@/features/order-form/ui/premiere-order-form";
+import { BoostInfoSection } from "@/features/boost-info/ui/boost-info-section";
 
 export function CS2PremierPage() {
   return (
@@ -14,52 +17,36 @@ export function CS2PremierPage() {
         secondaryCtaHref="/cs2"
       />
 
-      <section className="py-20 md:py-28">
+      <section
+        id="order"
+        className="py-20 md:py-28 bg-bg-secondary overflow-hidden"
+      >
         <Container>
-          <div className="max-w-3xl mx-auto">
-            <SectionTitle
-              title="Premier Boost Advantages"
-              subtitle="Our Premier boost service is designed for maximum efficiency and safety."
-            />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {[
-                {
-                  icon: "\uD83C\uDFAE",
-                  title: "Solo or Duo Queue",
-                  desc: "Play alongside our booster or let them handle it solo \u2014 your choice.",
-                },
-                {
-                  icon: "\uD83D\uDCC8",
-                  title: "Rating Guarantee",
-                  desc: "We guarantee the exact rating you ordered. No shortcuts.",
-                },
-                {
-                  icon: "\uD83D\uDD12",
-                  title: "Full Account Security",
-                  desc: "VPN protection, offline mode, and secure account handling.",
-                },
-                {
-                  icon: "\u23F1\uFE0F",
-                  title: "Fast Completion",
-                  desc: "Most orders completed within 24-72 hours depending on rating gap.",
-                },
-              ].map((item) => (
-                <div
-                  key={item.title}
-                  className="p-6 rounded-[var(--radius-lg)] bg-bg-card border border-border"
-                >
-                  <div className="text-2xl mb-3">{item.icon}</div>
-                  <h3 className="font-semibold text-text-primary mb-1">
-                    {item.title}
-                  </h3>
-                  <p className="text-text-secondary text-sm">{item.desc}</p>
-                </div>
-              ))}
-            </div>
+          <div className="w-full">
+            <PremiereOrderForm />
           </div>
         </Container>
       </section>
+
+      <BoostInfoSection
+        title="Why Choose Our"
+        gradientTitle="Premier Boost?"
+        features={[
+          "Top-rated players with 30,000+ Premier rating",
+          "Consistent 80%+ win rate on all Premier orders",
+          "Solo or duo queue options for your comfort",
+          "Secure VPN protection and offline mode included",
+          "Full money-back guarantee on every order",
+          "24/7 live support via Discord and Telegram",
+        ]}
+        howItWorksTitle="How Premier Boost Works"
+        steps={[
+          { step: "1", text: "Enter your current and target Premier rating" },
+          { step: "2", text: "Complete the order and share account details securely" },
+          { step: "3", text: "Our booster starts your session within 30 minutes" },
+          { step: "4", text: "Watch progress live and get your boosted account back" },
+        ]}
+      />
     </>
   );
 }

@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 const protectedRoutes = ["/profile"];
 const authRoutes = ["/login", "/registration"];
 export function proxy(request: NextRequest) {
-  const token = request.cookies.get("access_token")?.value;
+  const token = request.cookies.get("refresh_token")?.value;
   const { pathname } = request.nextUrl;
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route),

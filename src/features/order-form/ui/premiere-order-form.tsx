@@ -4,87 +4,68 @@ import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import premierGif from "@/shared/assets/gif/primier.gif";
 import {
-  TrendingUp,
   User,
   Zap,
   Users,
   Target,
   GraduationCap,
-  ShieldCheck,
   Trophy,
   UserPlus,
-  EyeOff,
-  Star,
   ChevronRight,
   Clock,
-  Rocket,
 } from "lucide-react";
 
 import { useAppSelector } from "@/shared/hooks/redux-hook";
 import Link from "next/link";
 import { api } from "@/shared/config/axios-config";
 import { toast } from "react-hot-toast";
-import EloBar from "./elo-bar";
-export function FaceitOrderForm() {
+
+export function PremiereOrderForm() {
   const { user } = useAppSelector((state) => state.user);
-  const [currentElo, setCurrentElo] = useState<number>(2000);
-  const [eloGain, setEloGain] = useState<number>(200);
+  const [currentRating, setCurrentRating] = useState<number>(10000);
+  const [ratingGain, setRatingGain] = useState<number>(2000);
   const [isOrdering, setIsOrdering] = useState(false);
-  const desiredElo = currentElo + eloGain;
+  const desiredRating = currentRating + ratingGain;
 
   const [options, setOptions] = useState({
-    selfplay: false,
-    priority: false, // +15%
-    highRating: false, // +20%
-    moreBoosters: false, // +15%
-    superExpress: false, // +40%
-    premiumCoaching: false, // +80%
-    soloOnly: false, // +35%
-    offlineMode: false, // +0%
-    bringFriend: false, // +70%
-    premiumQue: false, // +70%
-    starBooster: false, // +40%
+    partyBoost: false,
+    priority: false,
+    boostersAmount: false,
+    express: false,
+    coaching: false,
+    solo: false,
+    bringFriend: false,
+    rankedBooster: false,
   });
 
-  const getDynamicRate = (elo: number) => {
-    if (elo < 2000) {
-      if (elo < 1000) return 0.05;
-      if (elo < 1500) return 0.08;
-      return 0.15;
-    }
-    if (elo < 2500) return 0.25 + (elo - 2000) * 0.0003;
-    if (elo < 2700) return 0.481;
-    if (elo < 3300) return 0.52 + (elo - 2700) * 0.00045;
-    if (elo < 3500) return 0.7949;
-    if (elo < 3700) return 1.0881;
-    return 1.1267;
+  const getPremiereRate = (rating: number) => {
+    if (rating < 15000) return 0.01608;
+    if (rating < 21000) return 0.01916;
+    if (rating < 25000) return 0.02978;
+    if (rating < 31000) return 0.04751;
+    return 0.10295;
   };
 
   const price = useMemo(() => {
-    if (desiredElo <= currentElo) {
-      return 0;
-    }
+    if (desiredRating <= currentRating) return 0;
 
     let basePrice = 0;
-    for (let i = currentElo; i < desiredElo; i++) {
-      basePrice += getDynamicRate(i);
+    for (let i = currentRating; i < desiredRating; i++) {
+      basePrice += getPremiereRate(i);
     }
 
     let multiplier = 1;
-    if (options.selfplay) multiplier += 0.4;
+    if (options.partyBoost) multiplier += 0.4;
     if (options.priority) multiplier += 0.15;
-    if (options.highRating) multiplier += 0.2;
-    if (options.moreBoosters) multiplier += 0.15;
-    if (options.superExpress) multiplier += 0.4;
-    if (options.premiumCoaching) multiplier += 0.8;
-    if (options.soloOnly) multiplier += 0.35;
-    if (options.offlineMode) multiplier += 0;
+    if (options.boostersAmount) multiplier += 0.15;
+    if (options.express) multiplier += 0.4;
+    if (options.coaching) multiplier += 0.8;
+    if (options.solo) multiplier += 0.35;
     if (options.bringFriend) multiplier += 0.7;
-    if (options.premiumQue) multiplier += 0.7;
-    if (options.starBooster) multiplier += 0.4;
+    if (options.rankedBooster) multiplier += 0.4;
 
     return Number((basePrice * multiplier).toFixed(2));
-  }, [currentElo, desiredElo, options]);
+  }, [currentRating, desiredRating, options]);
 
   const toggleOption = (key: keyof typeof options) => {
     setOptions((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -95,14 +76,14 @@ export function FaceitOrderForm() {
     setIsOrdering(true);
     try {
       await api.post("orders", {
-        service: "Faceit ELO Boost",
-        currentValue: currentElo,
-        desiredValue: desiredElo,
+        service: "CS2 Premiere Boost",
+        currentValue: currentRating,
+        desiredValue: desiredRating,
         options,
         price,
       });
       toast.success("Order placed successfully! Check your email.");
-      setEloGain(200);
+      setRatingGain(2000);
     } catch (error) {
       console.error(error);
       toast.error("Failed to place order. Please try again.");
@@ -111,16 +92,18 @@ export function FaceitOrderForm() {
     }
   };
 
+  const sliderPercent = ((ratingGain - 500) / (10000 - 500)) * 100;
+
   return (
-    <div className="w-full ">
+    <div className="w-full">
       <div className="bg-[#0b0e16] border border-[#1f2330] rounded-[32px] p-1 shadow-2xl overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 relative z-10">
-          <div className="lg:col-span-3 p-8 border-b lg:border-b-0 lg:border-r border-[#1f2330] bg-gradient-to-b from-transparent to-blue-500/5">
+          <div className="lg:col-span-3 p-8 border-b lg:border-b-0 lg:border-r border-[#1f2330] bg-gradient-to-b from-transparent to-purple-500/5">
             <div className="flex items-center gap-3 mb-8">
-              <div className="bg-blue-600/10 p-1.5 rounded-lg text-blue-500 shadow-inner overflow-hidden border border-blue-500/20">
+              <div className="bg-purple-600/10 p-1.5 rounded-lg text-purple-500 shadow-inner overflow-hidden border border-purple-500/20">
                 <Image
                   src={premierGif}
-                  alt="Premier"
+                  alt="Premiere"
                   width={32}
                   height={32}
                   className="scale-110"
@@ -130,8 +113,8 @@ export function FaceitOrderForm() {
                 <h2 className="text-xl font-black uppercase tracking-tighter italic text-white leading-none">
                   CarryMe
                 </h2>
-                <p className="text-[10px] text-blue-400 uppercase tracking-widest font-bold opacity-80">
-                  Premium Boost
+                <p className="text-[10px] text-purple-400 uppercase tracking-widest font-bold opacity-80">
+                  Premiere Boost
                 </p>
               </div>
             </div>
@@ -147,18 +130,23 @@ export function FaceitOrderForm() {
                   <input
                     type="number"
                     min={0}
-                    max={5000}
-                    value={currentElo === 0 ? "" : currentElo}
+                    max={35000}
+                    step={100}
+                    value={currentRating === 0 ? "" : currentRating}
                     onChange={(e) => {
                       const val =
                         e.target.value === "" ? 0 : Number(e.target.value);
-                      if (val >= 0 && val <= 5000) setCurrentElo(val);
+                      if (val >= 0 && val <= 35000) setCurrentRating(val);
                     }}
-                    className="w-full bg-[#161b28] border border-[#2d3446] rounded-2xl p-4 outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 font-bold text-white transition-all text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="w-full bg-[#161b28] border border-[#2d3446] rounded-2xl p-4 outline-none focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 font-bold text-white transition-all text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
-                  <div className="absolute right-4 top-4">
-                    <EloBar elo={desiredElo} size={32} />
-                  </div>
+                  {/* <div className="absolute right-4 top-4">
+                    <RatingGauge
+                      value={currentRating}
+                      tiers={premiereTiers}
+                      size={32}
+                    />
+                  </div> */}
                 </div>
               </div>
 
@@ -166,35 +154,39 @@ export function FaceitOrderForm() {
                 <div className="flex justify-between items-end px-1">
                   <div className="flex flex-col">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                      Target Elo
+                      Target Rating
                     </label>
                     <span className="text-2xl font-black text-white">
-                      {desiredElo}
+                      {desiredRating.toLocaleString()}
                     </span>
                   </div>
-                  <EloBar elo={desiredElo} size={32} />
+                  {/* <RatingGauge
+                    value={desiredRating}
+                    tiers={premiereTiers}
+                    size={32}
+                  /> */}
                 </div>
 
                 <div className="relative pt-4">
                   <input
                     type="range"
-                    min="25"
-                    max="1500"
-                    step="25"
-                    value={eloGain}
-                    onChange={(e) => setEloGain(Number(e.target.value))}
-                    className="w-full h-2.5 bg-[#0b0e16] rounded-full appearance-none cursor-pointer accent-blue-500 border border-[#1f2330] shadow-inner transition-all hover:brightness-110 active:brightness-125 focus:outline-none"
+                    min="500"
+                    max="10000"
+                    step="100"
+                    value={ratingGain}
+                    onChange={(e) => setRatingGain(Number(e.target.value))}
+                    className="w-full h-2.5 bg-[#0b0e16] rounded-full appearance-none cursor-pointer accent-purple-500 border border-[#1f2330] shadow-inner transition-all hover:brightness-110 active:brightness-125 focus:outline-none"
                     style={{
-                      background: `linear-gradient(to right, #7c3aed 0%, #06b6d4 ${((eloGain - 25) / 1475) * 100}%, #0b0e16 ${((eloGain - 25) / 1475) * 100}%, #0b0e16 100%)`,
+                      background: `linear-gradient(to right, #7c3aed 0%, #a855f7 ${sliderPercent}%, #0b0e16 ${sliderPercent}%, #0b0e16 100%)`,
                     }}
                   />
                   <div className="flex justify-between mt-3">
                     <span className="text-[9px] font-black text-gray-600 tracking-tighter shrink-0">
-                      START
+                      +500
                     </span>
                     <div className="h-px bg-[#1f2330] flex-1 mx-3 self-center opacity-30" />
                     <span className="text-[9px] font-black text-gray-600 tracking-tighter shrink-0">
-                      END +1500
+                      +10,000
                     </span>
                   </div>
                 </div>
@@ -202,7 +194,7 @@ export function FaceitOrderForm() {
 
               <div className="pt-4 flex items-center gap-2 text-[10px] text-gray-500 font-medium px-1">
                 <Clock size={12} />
-                <span>EST. COMPLETION: 24-48H</span>
+                <span>EST. COMPLETION: 48-72H</span>
               </div>
             </div>
           </div>
@@ -216,81 +208,60 @@ export function FaceitOrderForm() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 max-h-[350px] md:max-h-none overflow-y-auto md:overflow-visible pr-2 md:pr-0 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#1f2330] [&::-webkit-scrollbar-thumb]:rounded-full">
               <OptionItem
-                active={options.selfplay}
-                onClick={() => toggleOption("selfplay")}
-                label="Self Play"
+                active={options.partyBoost}
+                onClick={() => toggleOption("partyBoost")}
+                label="Party Boost"
                 pct="+40%"
-                icon={<User size={16} />}
+                icon={<Users size={16} />}
               />
               <OptionItem
                 active={options.priority}
                 onClick={() => toggleOption("priority")}
                 label="Priority"
                 pct="+15%"
+                icon={<Target size={16} />}
+              />
+              <OptionItem
+                active={options.boostersAmount}
+                onClick={() => toggleOption("boostersAmount")}
+                label="Extra Booster"
+                pct="+15%"
+                icon={<UserPlus size={16} />}
+              />
+              <OptionItem
+                active={options.express}
+                onClick={() => toggleOption("express")}
+                label="Express"
+                pct="+40%"
                 icon={<Zap size={16} />}
               />
               <OptionItem
-                active={options.highRating}
-                onClick={() => toggleOption("highRating")}
-                label="High Rating"
-                pct="+20%"
-                icon={<Star size={16} />}
-              />
-              <OptionItem
-                active={options.moreBoosters}
-                onClick={() => toggleOption("moreBoosters")}
-                label="Extra Boosters"
-                pct="+15%"
-                icon={<Users size={16} />}
-              />
-              <OptionItem
-                active={options.superExpress}
-                onClick={() => toggleOption("superExpress")}
-                label="Super Express"
-                pct="+40%"
-                icon={<Rocket size={16} />}
-              />
-              <OptionItem
-                active={options.premiumCoaching}
-                onClick={() => toggleOption("premiumCoaching")}
+                active={options.coaching}
+                onClick={() => toggleOption("coaching")}
                 label="Coaching"
                 pct="+80%"
                 icon={<GraduationCap size={16} />}
               />
               <OptionItem
-                active={options.soloOnly}
-                onClick={() => toggleOption("soloOnly")}
+                active={options.solo}
+                onClick={() => toggleOption("solo")}
                 label="Solo Only"
                 pct="+35%"
                 icon={<User size={16} />}
-              />
-              <OptionItem
-                active={options.offlineMode}
-                onClick={() => toggleOption("offlineMode")}
-                label="Offline Mode"
-                pct="FREE"
-                icon={<EyeOff size={16} />}
               />
               <OptionItem
                 active={options.bringFriend}
                 onClick={() => toggleOption("bringFriend")}
                 label="Bring Friend"
                 pct="+70%"
-                icon={<UserPlus size={16} />}
+                icon={<Users size={16} />}
               />
               <OptionItem
-                active={options.premiumQue}
-                onClick={() => toggleOption("premiumQue")}
-                label="Premium Queue"
-                pct="+70%"
-                icon={<ShieldCheck size={16} />}
-              />
-              <OptionItem
-                active={options.starBooster}
-                onClick={() => toggleOption("starBooster")}
-                label="Star Booster"
+                active={options.rankedBooster}
+                onClick={() => toggleOption("rankedBooster")}
+                label="Ranked Booster"
                 pct="+40%"
-                icon={<Star size={16} />}
+                icon={<Trophy size={16} />}
               />
             </div>
           </div>
@@ -303,22 +274,26 @@ export function FaceitOrderForm() {
 
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-400">Start Elo</span>
-                  <span className="text-white font-bold">{currentElo} ELO</span>
+                  <span className="text-gray-400">Start Rating</span>
+                  <span className="text-white font-bold">
+                    {currentRating.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-400">Target Elo</span>
-                  <span className="text-white font-bold">{desiredElo} ELO</span>
+                  <span className="text-gray-400">Target Rating</span>
+                  <span className="text-white font-bold">
+                    {desiredRating.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Rating Gain</span>
-                  <span className="text-blue-500 font-bold">
-                    +{eloGain} ELO
+                  <span className="text-purple-400 font-bold">
+                    +{ratingGain.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Addons Active</span>
-                  <span className="text-blue-500 font-bold">
+                  <span className="text-purple-400 font-bold">
                     {Object.values(options).filter((v) => v).length} selected
                   </span>
                 </div>
@@ -328,7 +303,9 @@ export function FaceitOrderForm() {
                     Final Price
                   </p>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-black text-blue-500">€</span>
+                    <span className="text-2xl font-black text-purple-500">
+                      €
+                    </span>
                     <span className="text-5xl font-black text-white tracking-tighter leading-none">
                       {price}
                     </span>
@@ -341,7 +318,7 @@ export function FaceitOrderForm() {
               <button
                 onClick={handleOrder}
                 disabled={isOrdering}
-                className="w-full cursor-pointer bg-blue-600 hover:bg-blue-500 py-5 rounded-2xl font-black transition-all text-white flex items-center justify-center gap-3 active:scale-95 shadow-xl shadow-blue-900/20 group uppercase tracking-tight text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full cursor-pointer bg-purple-600 hover:bg-purple-500 py-5 rounded-2xl font-black transition-all text-white flex items-center justify-center gap-3 active:scale-95 shadow-xl shadow-purple-900/20 group uppercase tracking-tight text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isOrdering ? (
                   <span className="flex items-center gap-2">
@@ -360,7 +337,7 @@ export function FaceitOrderForm() {
               </button>
             ) : (
               <div className="w-full relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-[20px] blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-600 rounded-[20px] blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
                 <div className="relative bg-[#0b0e16] rounded-2xl p-4 border border-[#1f2330] shadow-2xl flex flex-col items-center gap-3">
                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center">
                     Authentication Required
@@ -371,7 +348,7 @@ export function FaceitOrderForm() {
                   <div className="flex w-full gap-2">
                     <Link
                       href="/login"
-                      className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-center text-xs font-bold text-white transition-all shadow-lg shadow-blue-500/20 active:scale-95"
+                      className="flex-1 py-3 bg-purple-600 hover:bg-purple-500 rounded-xl text-center text-xs font-bold text-white transition-all shadow-lg shadow-purple-500/20 active:scale-95"
                     >
                       Login
                     </Link>
@@ -410,16 +387,16 @@ function OptionItem({
       onClick={onClick}
       className={`relative cursor-pointer group flex items-center p-3 px-4 rounded-xl border transition-all duration-300 min-h-[60px] gap-3 overflow-hidden ${
         active
-          ? "border-blue-500/50 bg-gradient-to-br from-blue-600/20 to-purple-600/10 shadow-[0_0_20px_rgba(59,130,246,0.15)] scale-[1.02] z-10"
+          ? "border-purple-500/50 bg-gradient-to-br from-purple-600/20 to-pink-600/10 shadow-[0_0_20px_rgba(168,85,247,0.15)] scale-[1.02] z-10"
           : "border-[#1f2330] bg-[#161b28] hover:border-[#2d3446] hover:bg-[#1c2234]"
       }`}
     >
       {active && (
-        <div className="absolute inset-0 bg-gradient-radial from-blue-500/10 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-radial from-purple-500/10 to-transparent pointer-events-none" />
       )}
 
       <div
-        className={`transition-all duration-300 ${active ? "text-blue-500 scale-110" : "text-gray-500 group-hover:text-gray-400"}`}
+        className={`transition-all duration-300 ${active ? "text-purple-500 scale-110" : "text-gray-500 group-hover:text-gray-400"}`}
       >
         {icon}
       </div>
@@ -433,7 +410,7 @@ function OptionItem({
       </div>
 
       {active && (
-        <div className="absolute top-2 right-2 flex items-center justify-center w-3 h-3 rounded-full bg-blue-500">
+        <div className="absolute top-2 right-2 flex items-center justify-center w-3 h-3 rounded-full bg-purple-500">
           <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
         </div>
       )}
