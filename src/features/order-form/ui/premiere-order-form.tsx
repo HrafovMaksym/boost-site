@@ -19,6 +19,7 @@ import { useAppSelector } from "@/shared/hooks/redux-hook";
 import Link from "next/link";
 import { api } from "@/shared/config/axios-config";
 import { toast } from "react-hot-toast";
+import ScoreBadge from "./premier-bar";
 
 export function PremiereOrderForm() {
   const { user } = useAppSelector((state) => state.user);
@@ -140,13 +141,9 @@ export function PremiereOrderForm() {
                     }}
                     className="w-full bg-[#161b28] border border-[#2d3446] rounded-2xl p-4 outline-none focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 font-bold text-white transition-all text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
-                  {/* <div className="absolute right-4 top-4">
-                    <RatingGauge
-                      value={currentRating}
-                      tiers={premiereTiers}
-                      size={32}
-                    />
-                  </div> */}
+                  <div className="absolute right-4 top-4">
+                    <ScoreBadge value={currentRating} />
+                  </div>
                 </div>
               </div>
 
@@ -160,11 +157,7 @@ export function PremiereOrderForm() {
                       {desiredRating.toLocaleString()}
                     </span>
                   </div>
-                  {/* <RatingGauge
-                    value={desiredRating}
-                    tiers={premiereTiers}
-                    size={32}
-                  /> */}
+                  <ScoreBadge value={desiredRating} />
                 </div>
 
                 <div className="relative pt-4">
