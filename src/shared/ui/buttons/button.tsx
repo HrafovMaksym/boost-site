@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BorderBeam } from "@/shared/ui/border-beam";
 
 type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
 type ButtonSize = "sm" | "md" | "lg";
@@ -13,6 +14,7 @@ interface ButtonProps {
   onClick?: () => void;
   className?: string;
   fullWidth?: boolean;
+  borderBeam?: boolean;
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
@@ -22,7 +24,8 @@ const variantStyles: Record<ButtonVariant, string> = {
     "bg-bg-card hover:bg-bg-card-hover text-text-primary border border-border",
   outline:
     "bg-transparent hover:bg-bg-card text-text-primary border border-border hover:border-border-hover",
-  ghost: "bg-transparent hover:bg-bg-card text-text-secondary hover:text-text-primary",
+  ghost:
+    "bg-transparent hover:bg-bg-card text-text-secondary hover:text-text-primary",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -39,9 +42,10 @@ export function Button({
   onClick,
   className = "",
   fullWidth = false,
+  borderBeam = false,
 }: ButtonProps) {
   const baseStyles = `
-    inline-flex items-center justify-center gap-2
+    relative inline-flex items-center justify-center gap-2
     font-semibold rounded-full
     transition-all duration-300
     cursor-pointer select-none
@@ -51,6 +55,22 @@ export function Button({
     ${className}
   `.trim();
 
+  const content = (
+    <>
+      {borderBeam && (
+        <BorderBeam
+          duration={4}
+          size={100}
+          reverse
+          className="from-transparent via-[#06b6d4] to-transparent"
+        />
+      )}
+      <span className="relative z-10 flex items-center justify-center gap-2">
+        {children}
+      </span>
+    </>
+  );
+
   if (href?.startsWith("#")) {
     const handleAnchorClick = () => {
       const el = document.querySelector(href);
@@ -59,7 +79,7 @@ export function Button({
 
     return (
       <button onClick={handleAnchorClick} className={baseStyles}>
-        {children}
+        {content}
       </button>
     );
   }
@@ -67,14 +87,14 @@ export function Button({
   if (href) {
     return (
       <Link href={href} className={baseStyles}>
-        {children}
+        {content}
       </Link>
     );
   }
 
   return (
     <button onClick={onClick} className={baseStyles}>
-      {children}
+      {content}
     </button>
   );
 }

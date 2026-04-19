@@ -106,6 +106,7 @@ export function ContactForm() {
         loading={isLoading}
         onClick={handleSubmit(onSubmit)}
         disabled={isLoading}
+        borderBeam={true}
       />
     </form>
   );

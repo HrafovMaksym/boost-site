@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { Button, Container } from "@/shared/ui";
+import { Button, ButtonDefault, Container } from "@/shared/ui";
 
 interface HeroSectionProps {
   title: string;
@@ -63,7 +63,7 @@ export function HeroSection({
             transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button href={ctaHref} size="lg">
+            <Button href={ctaHref} borderBeam={true} size="lg">
               {ctaText}
             </Button>
             {secondaryCtaText && secondaryCtaHref && (
