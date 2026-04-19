@@ -1,7 +1,5 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { verifyCheckoutSession } from "@/shared/server-actions/verify-checkout";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -18,9 +16,17 @@ function DiscordIcon({ className }: { className?: string }) {
   );
 }
 
-function OrderSuccessContent() {
-  const searchParams = useSearchParams();
-  const sessionId = searchParams.get("session_id");
+export default async function OrderSuccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ session_id?: string }>;
+}) {
+  const { session_id } = await searchParams;
+
+  if (!session_id) redirect("/");
+
+  const isValid = await verifyCheckoutSession(session_id);
+  if (!isValid) redirect("/");
 
   return (
     <div className="min-h-screen bg-[#070a10] flex items-center justify-center p-4">
@@ -35,7 +41,11 @@ function OrderSuccessContent() {
             <div className="relative inline-flex mb-6">
               <div className="absolute inset-0 rounded-full bg-green-500/20 blur-xl scale-150" />
               <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-[0_0_40px_rgba(34,197,94,0.3)]">
-                <CheckCircle size={40} className="text-white" strokeWidth={2.5} />
+                <CheckCircle
+                  size={40}
+                  className="text-white"
+                  strokeWidth={2.5}
+                />
               </div>
             </div>
 
@@ -47,14 +57,12 @@ function OrderSuccessContent() {
               it shortly.
             </p>
 
-            {sessionId && (
-              <div className="mt-4 inline-flex items-center gap-2 bg-[#161b28] border border-[#2d3446] rounded-full px-4 py-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[10px] text-gray-400 font-mono">
-                  Session confirmed
-                </span>
-              </div>
-            )}
+            <div className="mt-4 inline-flex items-center gap-2 bg-[#161b28] border border-[#2d3446] rounded-full px-4 py-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[10px] text-gray-400 font-mono">
+                Session confirmed
+              </span>
+            </div>
           </div>
 
           <div className="p-8">
@@ -76,7 +84,7 @@ function OrderSuccessContent() {
                 </p>
 
                 <a
-                  href="https://discord.gg/UBDf5G34"
+                  href="https://discord.gg/ajT7qf2YNN"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full inline-flex items-center justify-center gap-3 bg-[#5865F2] hover:bg-[#4752C4] text-white font-black uppercase tracking-tight text-sm py-4 rounded-xl transition-all duration-300 shadow-[0_0_30px_rgba(88,101,242,0.25)] hover:shadow-[0_0_50px_rgba(88,101,242,0.4)] active:scale-95"
@@ -85,24 +93,6 @@ function OrderSuccessContent() {
                   Join Discord Server
                   <ArrowRight size={16} />
                 </a>
-
-                <div className="flex items-center justify-center gap-3 mt-4">
-                  <div className="flex -space-x-2">
-                    {[...Array(4)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="w-6 h-6 rounded-full bg-gradient-to-br from-[#5865F2] to-[#4752C4] border-2 border-[#161b28] flex items-center justify-center"
-                      >
-                        <span className="text-[8px] text-white font-bold">
-                          {["CM", "GG", "EZ", "WP"][i]}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <span className="text-[10px] text-gray-500 font-medium">
-                    2,000+ members online
-                  </span>
-                </div>
               </div>
             </div>
 
@@ -126,19 +116,5 @@ function OrderSuccessContent() {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function OrderSuccessPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-[#070a10] flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-        </div>
-      }
-    >
-      <OrderSuccessContent />
-    </Suspense>
   );
 }
