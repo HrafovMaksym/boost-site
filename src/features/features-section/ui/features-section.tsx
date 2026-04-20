@@ -7,8 +7,10 @@ import Delievery from "@/shared/assets/gif/delievery.gif";
 import Safe from "@/shared/assets/gif/safe.gif";
 import Price from "@/shared/assets/gif/bestPrices.gif";
 import Support from "@/shared/assets/gif/chat.gif";
-import Tracking from "@/shared/assets/gif/traking.gif";
-import Guarantee from "@/shared/assets/gif/refund.gif";
+// import Tracking from "@/shared/assets/gif/traking.gif";
+// import Guarantee from "@/shared/assets/gif/refund.gif";
+import Clean from "@/shared/assets/gif/clean.gif";
+import Tailored from "@/shared/assets/gif/approach.gif";
 
 const features = [
   {
@@ -36,16 +38,16 @@ const features = [
       "Our support team is available around the clock via Discord, Telegram, and live chat.",
   },
   {
-    icon: Tracking,
-    title: "Live Tracking",
+    icon: Clean,
+    title: "Clean & Efficient Boosting",
     description:
-      "Watch your boost progress in real-time. Full transparency on every order.",
+      "Clean and efficient boosting with minimal risk. We play carefully and complete every order exactly as intended.",
   },
   {
-    icon: Guarantee,
-    title: "Money-Back Guarantee",
+    icon: Tailored,
+    title: "Tailored Approach",
     description:
-      "Not satisfied? We offer full refunds if we can't deliver the promised results.",
+      "Each order is customized to match your goals and current performance. No one-size-fits-all solutions — only a personalized approach.",
   },
 ];
 

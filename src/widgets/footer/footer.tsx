@@ -3,21 +3,18 @@ import { Container } from "@/shared/ui";
 import { SITE_CONFIG } from "@/entities/games";
 
 const FOOTER_LINKS = {
-  Games: [
-    { label: "CS2", href: "/cs2" },
-    { label: "Dota 2", href: "/dota2" },
-    { label: "Valorant", href: "/valorant" },
+  Support: [
+    { label: "Discord", href: "https://discord.gg/XzMFHxdpJP" },
+    { label: "FAQ", href: "/faq" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms of Service", href: "/terms" },
   ],
   "CS2 Services": [
     { label: "Faceit Boost", href: "/cs2/faceit" },
     { label: "Premier Boost", href: "/cs2/premier" },
     { label: "Coaching", href: "/cs2/coaching" },
   ],
-  Support: [
-    { label: "Discord", href: "#" },
-
-    { label: "FAQ", href: "/faq" },
-  ],
+  Games: [{ label: "CS2", href: "/cs2" }],
 };
 
 export function Footer() {
@@ -47,6 +44,9 @@ export function Footer() {
                   <li key={link.href + link.label}>
                     <Link
                       href={link.href}
+                      {...(link.href.startsWith("http")
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
                       className="text-text-muted hover:text-text-primary text-sm transition-colors duration-300"
                     >
                       {link.label}
@@ -59,24 +59,17 @@ export function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-text-muted text-sm">
-            &copy; {new Date().getFullYear()} {SITE_CONFIG.name}. All rights
-            reserved.
+          <p className="text-text-muted text-sm ">
+            &copy; {new Date().getFullYear()} {SITE_CONFIG.name}.
+            <br />
+            CarryMe isn’t endorsed or in any way affiliated with Valve
+            Corporation, Riot Games, Inc., and doesn’t reflect the views or
+            opinions of anyone officially involved in producing or managing CS2,
+            Counter-Strike 2, Valorant, Dota 2, CS2, Counter-Strike 2, Dota 2
+            are registered trademarks of the Valve Corporation. Valorant is
+            registered trademarks of the Riot Games, Inc. Any other marks are
+            trademarks and/or registered trademarks of their respective owners.
           </p>
-          <div className="flex items-center gap-6">
-            <Link
-              href="/privacy-policy"
-              className="text-text-muted hover:text-text-primary text-sm transition-colors"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="/terms"
-              className="text-text-muted hover:text-text-primary text-sm transition-colors"
-            >
-              Terms of Service
-            </Link>
-          </div>
         </div>
       </Container>
     </footer>

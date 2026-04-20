@@ -1,6 +1,7 @@
 "use client";
 
 import { Container, SectionTitle, FadeIn } from "@/shared/ui";
+import Link from "next/link";
 
 export function TermsPage() {
   return (
@@ -28,7 +29,44 @@ export function TermsPage() {
                   </h2>
                   <div className="space-y-4">
                     <p>
-                      These Terms and Conditions (hereinafter referred to as the <span className="text-text-primary font-semibold">“Agreement”</span>) are a legally binding agreement between you, whether personally or on behalf of an entity (<span className="text-text-primary font-semibold">&quot;Customer&quot;</span>, or <span className="text-text-primary font-semibold">&quot;you&quot;</span>) and CarryMe (<span className="text-text-primary font-semibold">&quot;Company&quot;</span>, <span className="text-text-primary font-semibold">&quot;we&quot;</span>, <span className="text-text-primary font-semibold">&quot;us&quot;</span>, or <span className="text-text-primary font-semibold">&quot;our&quot;</span>) regarding your access to and the use of <span className="text-accent-primary underline">carryme.com</span> (the <span className="text-text-primary font-semibold">&quot;Site&quot;</span>).
+                      These Terms and Conditions (hereinafter referred to as the{" "}
+                      <span className="text-text-primary font-semibold">
+                        “Agreement”
+                      </span>
+                      ) are a legally binding agreement between you, whether
+                      personally or on behalf of an entity (
+                      <span className="text-text-primary font-semibold">
+                        &quot;Customer&quot;
+                      </span>
+                      , or{" "}
+                      <span className="text-text-primary font-semibold">
+                        &quot;you&quot;
+                      </span>
+                      ) and CarryMe (
+                      <span className="text-text-primary font-semibold">
+                        &quot;Company&quot;
+                      </span>
+                      ,{" "}
+                      <span className="text-text-primary font-semibold">
+                        &quot;we&quot;
+                      </span>
+                      ,{" "}
+                      <span className="text-text-primary font-semibold">
+                        &quot;us&quot;
+                      </span>
+                      , or{" "}
+                      <span className="text-text-primary font-semibold">
+                        &quot;our&quot;
+                      </span>
+                      ) regarding your access to and the use of{" "}
+                      <span className="text-accent-primary underline">
+                        carryme.сс
+                      </span>{" "}
+                      (the{" "}
+                      <span className="text-text-primary font-semibold">
+                        &quot;Site&quot;
+                      </span>
+                      ).
                     </p>
                     <p className="p-4 bg-accent-primary/5 border border-accent-primary/20 rounded-xl text-sm">
                       By visiting the Site, you acknowledge that you have read,
@@ -252,15 +290,19 @@ export function TermsPage() {
                   </h2>
                   <div className="space-y-4">
                     <p>
-                      8.1. We act as a &apos;Data Controller&apos; for account management
-                      and a &apos;Data Processor&apos; for order execution under the GDPR.
+                      8.1. We act as a &apos;Data Controller&apos; for account
+                      management and a &apos;Data Processor&apos; for order
+                      execution under the GDPR.
                     </p>
                     <p>
                       8.2. We process personal data only as necessary to provide
                       Services. Full details are available in our{" "}
-                      <span className="text-accent-primary underline">
+                      <Link
+                        href={"/privacy-policy"}
+                        className="text-accent-primary underline"
+                      >
                         Privacy Policy
-                      </span>
+                      </Link>
                       . For inquiries, contact: carryme.support@gmail.com
                     </p>
                   </div>
@@ -308,7 +350,7 @@ export function TermsPage() {
                           Discord
                         </span>
                         <a
-                          href="https://discord.gg/23w7QQuB"
+                          href="https://discord.gg/XzMFHxdpJP"
                           className="text-accent-secondary font-medium"
                         >
                           Support Channel

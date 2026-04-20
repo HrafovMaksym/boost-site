@@ -110,7 +110,7 @@ export default async function OrderSuccessPage({
                     </p>
 
                     <a
-                      href="https://discord.gg/ajT7qf2YNN"
+                      href="https://discord.gg/6ZzycFAbRr"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full inline-flex items-center justify-center gap-3 bg-[#5865F2] hover:bg-[#4752C4] text-white font-semibold text-sm py-4 rounded-[var(--radius-md)] transition-all duration-300 shadow-[0_0_30px_rgba(88,101,242,0.25)] hover:shadow-[0_0_50px_rgba(88,101,242,0.4)] hover:-translate-y-0.5 active:scale-[0.98]"

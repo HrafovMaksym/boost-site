@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Container } from "@/shared/ui";
 import { SITE_CONFIG } from "@/entities/games";
+import logo from "@/shared/assets/logo.svg";
 import { NAV_LINKS } from "./model/consts";
 
 import { logout } from "@/features/auth/model/actions";
@@ -21,7 +23,11 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg-primary/80 backdrop-blur-xl">
       <Container>
         <div className="flex items-center justify-between h-[var(--header-height)]">
-          <Link href="/" className="text-2xl font-bold gradient-text">
+          <Link
+            href="/"
+            className="flex items-center  text-2xl font-bold gradient-text"
+          >
+            <Image src={logo} alt="Logo" width={42} height={42} />
             {SITE_CONFIG.name}
           </Link>
 
@@ -82,7 +88,11 @@ export function Header() {
                     stroke="currentColor"
                     strokeWidth={2.5}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
 
@@ -96,8 +106,12 @@ export function Header() {
                       className="absolute right-0 mt-2 w-56 rounded-2xl bg-bg-card border border-border shadow-2xl shadow-black/40 overflow-hidden p-1.5"
                     >
                       <div className="px-3 py-3 border-b border-border mb-1">
-                        <p className="text-white font-bold text-sm truncate">{user.name}</p>
-                        <p className="text-text-muted text-xs truncate">{user.email}</p>
+                        <p className="text-white font-bold text-sm truncate">
+                          {user.name}
+                        </p>
+                        <p className="text-text-muted text-xs truncate">
+                          {user.email}
+                        </p>
                       </div>
 
                       <Link
@@ -205,8 +219,12 @@ export function Header() {
                         {user.name?.charAt(0) || "U"}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-white font-bold text-sm truncate">{user.name}</p>
-                        <p className="text-text-muted text-xs truncate">{user.email}</p>
+                        <p className="text-white font-bold text-sm truncate">
+                          {user.name}
+                        </p>
+                        <p className="text-text-muted text-xs truncate">
+                          {user.email}
+                        </p>
                       </div>
                     </div>
                     <Link

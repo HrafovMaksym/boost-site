@@ -155,7 +155,7 @@ export function FaceitOrderForm() {
                     className="w-full bg-[#161b28] border border-[#2d3446] rounded-2xl p-4 outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 font-bold text-white transition-all text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                   <div className="absolute right-4 top-4">
-                    <EloBar elo={desiredElo} size={32} />
+                    <EloBar elo={currentElo} size={32} />
                   </div>
                 </div>
               </div>

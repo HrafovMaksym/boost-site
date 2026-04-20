@@ -42,9 +42,15 @@ export function CS2FaceitPage() {
         howItWorksTitle="How Faceit Boost Works"
         steps={[
           { step: "1", text: "Select your current and desired Faceit level" },
-          { step: "2", text: "Complete the order and provide account details securely" },
+          {
+            step: "2",
+            text: "Complete the order and provide account details securely",
+          },
           { step: "3", text: "Our pro starts playing within 15 minutes" },
-          { step: "4", text: "Track progress live and receive your boosted account" },
+          {
+            step: "4",
+            text: "Track progress live and receive your boosted account",
+          },
         ]}
       />
     </>

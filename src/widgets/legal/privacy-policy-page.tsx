@@ -32,7 +32,7 @@ export function PrivacyPolicyPage() {
                       this Privacy Policy is between our Company and you, the
                       customer and user of our website address:{" "}
                       <span className="text-accent-primary font-medium">
-                        carryme.com
+                        carryme.сс
                       </span>
                     </p>
                     <p>
@@ -176,8 +176,8 @@ export function PrivacyPolicyPage() {
                           Payment Processing:
                         </span>
                         <span>
-                          We use secure third-party payment processors (Stripe,
-                          etc). We do not store your full card details.
+                          We use secure third-party payment processors (Stripe).
+                          We do not store your full card details.
                         </span>
                       </li>
                       <li className="flex gap-4">
@@ -288,7 +288,7 @@ export function PrivacyPolicyPage() {
                         Discord Community
                       </span>
                       <a
-                        href="https://discord.gg/23w7QQuB"
+                        href="https://discord.gg/2Dn9MHMSVW "
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-accent-secondary hover:underline font-medium"

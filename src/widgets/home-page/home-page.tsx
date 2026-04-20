@@ -13,7 +13,7 @@ export function HomePage() {
       <HeroSection
         title="Level Up Your"
         gradientTitle="Game"
-        subtitle="Professional boosting services for CS2, Dota 2, and Valorant. Fast, safe, and affordable — powered by top-tier players."
+        subtitle="Professional boosting services for CS2. Fast, safe, and affordable — powered by top-tier players."
         ctaText="Browse Services"
         ctaHref="/cs2"
         secondaryCtaText="How It Works"

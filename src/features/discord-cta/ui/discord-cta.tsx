@@ -61,7 +61,7 @@ export function DiscordCTA() {
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
                   <a
-                    href="https://discord.gg/UBDf5G34"
+                    href="https://discord.gg/2Dn9MHMSVW"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="
@@ -78,9 +78,9 @@ export function DiscordCTA() {
                     <DiscordIcon className="w-5 h-5" />
                     Join Discord
                   </a>
-                  <span className="text-text-muted text-sm">
+                  {/* <span className="text-text-muted text-sm">
                     2,000+ members online
-                  </span>
+                  </span> */}
                 </div>
               </div>
             </div>
