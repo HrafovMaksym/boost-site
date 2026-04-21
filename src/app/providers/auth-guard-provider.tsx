@@ -8,11 +8,7 @@ import { api, onAuthRefreshFailed } from "@/shared/config/axios-config";
 
 const REFRESH_INTERVAL = 14 * 60 * 1000;
 
-export function AuthGuardProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function AuthGuardProvider({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { user } = useAppSelector((state) => state.user);
@@ -20,7 +16,8 @@ export function AuthGuardProvider({
 
   const handleLogout = useCallback(() => {
     dispatch(clearUser());
-    router.replace("/auth/login");
+
+    router.replace("/login");
   }, [dispatch, router]);
 
   const silentRefresh = useCallback(async () => {
@@ -29,11 +26,12 @@ export function AuthGuardProvider({
     try {
       await api.post("/auth/refresh");
     } catch {
-      handleLogout();
+      // Don't logout here — the axios interceptor's onAuthRefreshFailed
+      // handles logout when the refresh token is truly invalid.
     } finally {
       isRefreshing.current = false;
     }
-  }, [user, handleLogout]);
+  }, [user]);
 
   useEffect(() => {
     const unsubscribe = onAuthRefreshFailed(handleLogout);

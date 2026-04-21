@@ -9,12 +9,12 @@ export const steps = [
     step: "02",
     title: "Place Your Order",
     description:
-      "Complete the order with secure payment. Our team assigns the best available booster.",
+      "Complete your order with secure payment. Join our Discord to stay in touch with admins. We’ll assign the best available booster.",
   },
   {
     step: "03",
-    title: "Track & Receive",
+    title: "Receive",
     description:
-      "Monitor progress in real-time. Once complete, enjoy your new rank and improved stats.",
+      "Once the boost is complete, you’ll get an email notification. Enjoy your new rank and improved stats.",
   },
 ];

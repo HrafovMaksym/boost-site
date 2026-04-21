@@ -56,8 +56,14 @@ export function FaceitOrderForm() {
   const bringFriendDisabled = !options.selfplay;
   const premiumQueDisabled = options.moreBoosters + options.bringFriend > 3;
 
-  const boostersMaxCount = boostersDisabled ? 0 : (options.selfplay ? Math.min(4, 3 - options.bringFriend) : 4);
-  const friendsMaxCount = bringFriendDisabled ? 0 : Math.min(3, 3 - options.moreBoosters);
+  const boostersMaxCount = boostersDisabled
+    ? 0
+    : options.selfplay
+      ? Math.min(4, 3 - options.bringFriend)
+      : 4;
+  const friendsMaxCount = bringFriendDisabled
+    ? 0
+    : Math.min(3, 3 - options.moreBoosters);
 
   const getDynamicRate = (elo: number) => {
     if (elo < 2000) {
@@ -144,7 +150,10 @@ export function FaceitOrderForm() {
       const next = { ...prev };
       if (key === "moreBoosters") {
         const max = next.selfplay ? Math.min(4, 3 - next.bringFriend) : 4;
-        next.moreBoosters = Math.max(0, Math.min(prev.moreBoosters + delta, max));
+        next.moreBoosters = Math.max(
+          0,
+          Math.min(prev.moreBoosters + delta, max),
+        );
       } else {
         const max = Math.min(3, 3 - next.moreBoosters);
         next.bringFriend = Math.max(0, Math.min(prev.bringFriend + delta, max));
@@ -328,7 +337,7 @@ export function FaceitOrderForm() {
                 maxCount={boostersMaxCount}
                 onIncrement={() => adjustCounter("moreBoosters", 1)}
                 onDecrement={() => adjustCounter("moreBoosters", -1)}
-                label="Extra Boosters"
+                label="Add Boosters"
                 pctPerUnit="+15%"
                 icon={<Users size={16} />}
                 tooltip="We'll add another booster to your lobby to ensure an even higher win rate and faster completion."
@@ -653,7 +662,7 @@ function CounterItem({
 
         <div className="text-left flex-1 min-w-0">
           <p
-            className={`text-[10px] font-black tracking-tight leading-tight uppercase transition-colors ${
+            className={`text-[10px] font-black tracking-tight leading-tight uppercase transition-colors ${label === "Add Boosters" ? "text-nowrap" : ""} ${
               disabled
                 ? "text-gray-600"
                 : active

@@ -48,8 +48,12 @@ export function PremiereOrderForm() {
   const soloDisabled = options.selfplay;
   const bringFriendDisabled = !options.selfplay;
 
-  const boostersMaxCount = options.selfplay ? Math.min(4, 3 - options.bringFriend) : 4;
-  const friendsMaxCount = bringFriendDisabled ? 0 : Math.min(3, 3 - options.boostersAmount);
+  const boostersMaxCount = options.selfplay
+    ? Math.min(4, 3 - options.bringFriend)
+    : 4;
+  const friendsMaxCount = bringFriendDisabled
+    ? 0
+    : Math.min(3, 3 - options.boostersAmount);
 
   const getPremiereRate = (rating: number) => {
     if (rating < 15000) return 0.01608;
@@ -89,7 +93,8 @@ export function PremiereOrderForm() {
         if (next.selfplay) {
           next.solo = false;
           const maxBoosters = 3 - next.bringFriend;
-          if (next.boostersAmount > maxBoosters) next.boostersAmount = maxBoosters;
+          if (next.boostersAmount > maxBoosters)
+            next.boostersAmount = maxBoosters;
         }
         if (!next.selfplay) next.bringFriend = 0;
       } else if (key === "solo") {
@@ -112,7 +117,10 @@ export function PremiereOrderForm() {
       const next = { ...prev };
       if (key === "boostersAmount") {
         const max = next.selfplay ? Math.min(4, 3 - next.bringFriend) : 4;
-        next.boostersAmount = Math.max(0, Math.min(prev.boostersAmount + delta, max));
+        next.boostersAmount = Math.max(
+          0,
+          Math.min(prev.boostersAmount + delta, max),
+        );
       } else {
         const max = Math.min(3, 3 - next.boostersAmount);
         next.bringFriend = Math.max(0, Math.min(prev.bringFriend + delta, max));
@@ -284,7 +292,7 @@ export function PremiereOrderForm() {
                 maxCount={boostersMaxCount}
                 onIncrement={() => adjustCounter("boostersAmount", 1)}
                 onDecrement={() => adjustCounter("boostersAmount", -1)}
-                label="Extra Booster"
+                label="Add Boosters"
                 pctPerUnit="+15%"
                 icon={<UserPlus size={16} />}
                 tooltip="We will add another booster to your lobby. This ensures an incredible win rate and even faster completion."
@@ -597,7 +605,7 @@ function CounterItem({
 
         <div className="text-left flex-1 min-w-0">
           <p
-            className={`text-[10px] font-black tracking-tight leading-tight uppercase transition-colors ${
+            className={`text-[10px] font-black tracking-tight leading-tight uppercase transition-colors ${label === "Add Boosters" ? "text-nowrap" : ""} ${
               disabled
                 ? "text-gray-600"
                 : active
@@ -624,9 +632,7 @@ function CounterItem({
               {count}/{maxCount}
             </span>
             <button
-              onClick={
-                disabled || count >= maxCount ? undefined : onIncrement
-              }
+              onClick={disabled || count >= maxCount ? undefined : onIncrement}
               className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
                 disabled || count >= maxCount
                   ? "text-gray-700 cursor-not-allowed"

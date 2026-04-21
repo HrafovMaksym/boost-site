@@ -269,20 +269,14 @@ export function validateAndCalculatePrice(body: unknown): ValidatedOrder {
       throw new Error("High Rating and Solo Only cannot be combined");
     }
     if (opts.soloOnly && (opts.moreBoosters as number) > 0) {
-      throw new Error("Solo Only and Extra Boosters cannot be combined");
+      throw new Error("Solo Only and Add Boosters cannot be combined");
     }
     if (!opts.selfplay && (opts.bringFriend as number) > 0) {
       throw new Error("Bring Friend requires Self Play");
     }
 
-    if (
-      opts.highRating &&
-      opts.selfplay &&
-      desiredValue > 3000
-    ) {
-      throw new Error(
-        "High Rating + Self Play limits max ELO to 3000",
-      );
+    if (opts.highRating && opts.selfplay && desiredValue > 3000) {
+      throw new Error("High Rating + Self Play limits max ELO to 3000");
     }
     if (
       opts.selfplay &&

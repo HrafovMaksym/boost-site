@@ -22,7 +22,7 @@ const OPTION_LABELS: Record<string, string> = {
   selfplay: "Self Play",
   priority: "Priority",
   highRating: "High Rating",
-  moreBoosters: "Extra Boosters",
+  moreBoosters: "Add Boosters",
   superExpress: "Super Express",
   premiumCoaching: "Coaching",
   soloOnly: "Solo Only",
@@ -30,7 +30,7 @@ const OPTION_LABELS: Record<string, string> = {
   bringFriend: "Bring Friend",
   premiumQue: "Premium Queue",
   starBooster: "Star Booster",
-  boostersAmount: "Extra Boosters",
+  boostersAmount: "Add Boosters",
   express: "Express",
   coaching: "Coaching",
   solo: "Solo Only",
@@ -368,7 +368,8 @@ function OrderCard({
           {order.status === "CANCELLED" && (
             <div className="flex items-center gap-3 p-3 bg-red-500/5 border border-red-500/10 rounded-xl">
               <p className="text-xs text-gray-400 flex-1">
-                For more details about cancellation, please contact our support team.
+                For more details about cancellation, please contact our support
+                team.
               </p>
               <a
                 href="https://discord.gg/XzMFHxdpJP"

@@ -11,12 +11,11 @@ interface GameCardProps {
 export function GameCard({ game, isComingSoon }: GameCardProps) {
   const content = (
     <>
-      <div className="absolute inset-0 bg-bg-card overflow-hidden">
+      <div className="absolute inset-0 bg-bg-card overflow-hidden rounded-[inherit]">
         <Image
           src={game.backgroundImage}
           alt={game.name}
-          fill
-          className={`object-cover transition-transform duration-700 will-change-transform ${
+          className={`w-full h-[97%] object-cover transition-transform duration-700 will-change-transform ${
             isComingSoon ? "brightness-[0.3]" : "group-hover:scale-[1.03]"
           }`}
           sizes="(max-width: 768px) 100vw, 33vw"

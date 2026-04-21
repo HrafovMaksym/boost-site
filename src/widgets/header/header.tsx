@@ -30,7 +30,9 @@ export function Header() {
             className="flex items-center  text-2xl font-bold gradient-text"
           >
             <Image src={logo} alt="Logo" width={42} height={42} />
-            {SITE_CONFIG.name}
+            <span className="font-[Helvetica] uppercase">
+              {SITE_CONFIG.name}
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-2">
