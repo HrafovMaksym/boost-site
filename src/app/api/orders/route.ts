@@ -108,6 +108,7 @@ export async function POST(req: Request) {
                 
                 <div style="text-align: center;">
                   <a href="https://carryme.cc/profile/orders" style="display: inline-block; background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">View Dashboard</a>
+                  <a href="https://discord.gg/6ZzycFAbRr" style="display: inline-block; background-color: #5865F2; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-left: 12px; margin-top: 10px;">Join Discord</a>
                 </div>
               </div>
               

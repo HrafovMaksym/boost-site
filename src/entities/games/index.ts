@@ -22,15 +22,22 @@ export const GAMES: GameConfig[] = [
           "Level up your Faceit account from any level to your desired rank. Our boosters maintain high win rates.",
         href: "/cs2/faceit",
         icon: faceitGif,
-        features: ["Elo 100-4000", "High win rate", "Fast completion"],
+        features: [
+          "Elo 100-4000",
+          "High win rate",
+          "Fast completion",
+          "High security & stealth",
+        ],
       },
       {
         title: "Premier Boost",
-        description: "Increase your Premier rating with consistent wins.",
+        description:
+          "Increase your Premier rating with consistent wins. Our boosters will help you break through any rating stuck point.",
         href: "/cs2/premier",
         icon: premierGif,
         features: [
           "Rating 1000-30000",
+          "Safe & legit play",
           "Flexible schedule",
           "Rating guarantee",
         ],

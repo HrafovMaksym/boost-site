@@ -1,6 +1,7 @@
 "use client";
 
 import { Container, SectionTitle, FadeIn } from "@/shared/ui";
+import Link from "next/link";
 
 export function PrivacyPolicyPage() {
   return (
@@ -221,11 +222,24 @@ export function PrivacyPolicyPage() {
                   </h2>
                   <p>
                     Our Website may contain links to third-party services such
-                    as <span className="text-accent-secondary">Discord</span>,{" "}
-                    <span className="text-accent-secondary">Mail</span>, and{" "}
-                    <span className="text-accent-secondary">
-                      Payment Gateways
-                    </span>
+                    as{" "}
+                    <Link
+                      href={"https://discord.gg/2Dn9MHMSVW"}
+                      className="text-accent-secondary"
+                    >
+                      Discord
+                    </Link>
+                    ,{" "}
+                    <Link href="mailto:support@carryme.cc" className="text-accent-secondary">
+                      support@carryme.cc
+                    </Link>
+                    , and{" "}
+                    <Link
+                      href={"https://stripe.com/"}
+                      className="text-accent-secondary"
+                    >
+                      Payment Gateways (Stripe)
+                    </Link>
                     . We are not responsible for the privacy practices or
                     content of these third-party sites. Please read their
                     respective policies carefully.

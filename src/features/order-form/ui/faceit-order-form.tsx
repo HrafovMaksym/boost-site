@@ -4,20 +4,20 @@ import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import premierGif from "@/shared/assets/gif/primier.gif";
 import {
-  TrendingUp,
   User,
   Zap,
   Users,
-  Target,
   GraduationCap,
   ShieldCheck,
-  Trophy,
   UserPlus,
   EyeOff,
   Star,
   ChevronRight,
   Clock,
   Rocket,
+  HelpCircle,
+  Plus,
+  Minus,
 } from "lucide-react";
 
 import { useAppSelector } from "@/shared/hooks/redux-hook";
@@ -25,26 +25,39 @@ import Link from "next/link";
 import { api } from "@/shared/config/axios-config";
 import { toast } from "react-hot-toast";
 import EloBar from "./elo-bar";
+
 export function FaceitOrderForm() {
   const { user } = useAppSelector((state) => state.user);
   const [currentElo, setCurrentElo] = useState<number>(2000);
   const [eloGain, setEloGain] = useState<number>(200);
   const [isOrdering, setIsOrdering] = useState(false);
-  const desiredElo = currentElo + eloGain;
 
   const [options, setOptions] = useState({
     selfplay: false,
-    priority: false, // +15%
-    highRating: false, // +20%
-    moreBoosters: false, // +15%
-    superExpress: false, // +40%
-    premiumCoaching: false, // +80%
-    soloOnly: false, // +35%
-    offlineMode: false, // +0%
-    bringFriend: false, // +70%
-    premiumQue: false, // +70%
-    starBooster: false, // +40%
+    priority: false,
+    highRating: false,
+    moreBoosters: 0,
+    superExpress: false,
+    premiumCoaching: false,
+    soloOnly: false,
+    offlineMode: false,
+    bringFriend: 0,
+    premiumQue: false,
+    starBooster: false,
   });
+
+  const eloLimit = options.highRating && options.selfplay ? 3000 : 4000;
+  const maxGain = eloLimit - currentElo;
+  const safeGain = maxGain >= 25 ? Math.max(25, Math.min(eloGain, maxGain)) : 0;
+  const desiredElo = currentElo + safeGain;
+
+  const soloDisabled = options.selfplay || options.highRating;
+  const boostersDisabled = options.soloOnly;
+  const bringFriendDisabled = !options.selfplay;
+  const premiumQueDisabled = options.moreBoosters + options.bringFriend > 3;
+
+  const boostersMaxCount = boostersDisabled ? 0 : (options.selfplay ? Math.min(4, 3 - options.bringFriend) : 4);
+  const friendsMaxCount = bringFriendDisabled ? 0 : Math.min(3, 3 - options.moreBoosters);
 
   const getDynamicRate = (elo: number) => {
     if (elo < 2000) {
@@ -61,9 +74,7 @@ export function FaceitOrderForm() {
   };
 
   const price = useMemo(() => {
-    if (desiredElo <= currentElo) {
-      return 0;
-    }
+    if (desiredElo <= currentElo) return 0;
 
     let basePrice = 0;
     for (let i = currentElo; i < desiredElo; i++) {
@@ -74,34 +85,92 @@ export function FaceitOrderForm() {
     if (options.selfplay) multiplier += 0.4;
     if (options.priority) multiplier += 0.15;
     if (options.highRating) multiplier += 0.2;
-    if (options.moreBoosters) multiplier += 0.15;
+    multiplier += 0.15 * options.moreBoosters;
     if (options.superExpress) multiplier += 0.4;
     if (options.premiumCoaching) multiplier += 0.8;
     if (options.soloOnly) multiplier += 0.35;
-    if (options.offlineMode) multiplier += 0;
-    if (options.bringFriend) multiplier += 0.7;
+    multiplier += 0.7 * options.bringFriend;
     if (options.premiumQue) multiplier += 0.7;
     if (options.starBooster) multiplier += 0.4;
 
     return Number((basePrice * multiplier).toFixed(2));
   }, [currentElo, desiredElo, options]);
 
-  const toggleOption = (key: keyof typeof options) => {
-    setOptions((prev) => ({ ...prev, [key]: !prev[key] }));
+  const toggleOption = (key: string) => {
+    setOptions((prev) => {
+      const next = { ...prev };
+
+      if (key === "selfplay") {
+        next.selfplay = !prev.selfplay;
+        if (next.selfplay) {
+          next.soloOnly = false;
+          const maxBoosters = 3 - next.bringFriend;
+          if (next.moreBoosters > maxBoosters) next.moreBoosters = maxBoosters;
+        }
+        if (!next.selfplay) {
+          next.bringFriend = 0;
+        }
+      } else if (key === "highRating") {
+        next.highRating = !prev.highRating;
+        if (next.highRating) next.soloOnly = false;
+      } else if (key === "soloOnly") {
+        if (!soloDisabled) {
+          next.soloOnly = !prev.soloOnly;
+          if (next.soloOnly) next.moreBoosters = 0;
+        }
+      } else if (key === "premiumQue") {
+        if (!premiumQueDisabled) {
+          next.premiumQue = !prev.premiumQue;
+        }
+      } else {
+        (next as Record<string, boolean | number>)[key] = !(
+          prev as Record<string, boolean | number>
+        )[key];
+      }
+
+      if (next.moreBoosters + next.bringFriend > 3) {
+        next.premiumQue = false;
+      }
+
+      return next;
+    });
+  };
+
+  const adjustCounter = (
+    key: "moreBoosters" | "bringFriend",
+    delta: number,
+  ) => {
+    setOptions((prev) => {
+      const next = { ...prev };
+      if (key === "moreBoosters") {
+        const max = next.selfplay ? Math.min(4, 3 - next.bringFriend) : 4;
+        next.moreBoosters = Math.max(0, Math.min(prev.moreBoosters + delta, max));
+      } else {
+        const max = Math.min(3, 3 - next.moreBoosters);
+        next.bringFriend = Math.max(0, Math.min(prev.bringFriend + delta, max));
+      }
+
+      if (next.moreBoosters + next.bringFriend > 3) {
+        next.premiumQue = false;
+      }
+
+      return next;
+    });
   };
 
   const handleOrder = async () => {
     if (!user) return;
     setIsOrdering(true);
     try {
-      const { data } = await api.post("stripe/checkout", {
+      await api.post("orders", {
         service: "Faceit ELO Boost",
         currentValue: currentElo,
         desiredValue: desiredElo,
         options,
         price,
       });
-      window.location.href = data.url;
+      toast.success("Order placed successfully!");
+      window.location.href = "/profile/orders";
     } catch (error) {
       console.error(error);
       toast.error("Failed to proceed to payment. Please try again.");
@@ -109,8 +178,22 @@ export function FaceitOrderForm() {
     }
   };
 
+  const addonsCount = [
+    options.selfplay,
+    options.priority,
+    options.highRating,
+    options.moreBoosters > 0,
+    options.superExpress,
+    options.premiumCoaching,
+    options.soloOnly,
+    options.offlineMode,
+    options.bringFriend > 0,
+    options.premiumQue,
+    options.starBooster,
+  ].filter(Boolean).length;
+
   return (
-    <div className="w-full ">
+    <div className="w-full">
       <div className="bg-[#0b0e16] border border-[#1f2330] rounded-[32px] p-1 shadow-2xl overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 relative z-10">
           <div className="lg:col-span-3 p-8 border-b lg:border-b-0 lg:border-r border-[#1f2330] bg-gradient-to-b from-transparent to-blue-500/5">
@@ -145,12 +228,12 @@ export function FaceitOrderForm() {
                   <input
                     type="number"
                     min={0}
-                    max={5000}
+                    max={eloLimit}
                     value={currentElo === 0 ? "" : currentElo}
                     onChange={(e) => {
                       const val =
                         e.target.value === "" ? 0 : Number(e.target.value);
-                      if (val >= 0 && val <= 5000) setCurrentElo(val);
+                      if (val >= 0 && val <= eloLimit) setCurrentElo(val);
                     }}
                     className="w-full bg-[#161b28] border border-[#2d3446] rounded-2xl p-4 outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 font-bold text-white transition-all text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
@@ -177,22 +260,26 @@ export function FaceitOrderForm() {
                   <input
                     type="range"
                     min="25"
-                    max="1500"
+                    max={Math.max(25, maxGain)}
                     step="25"
-                    value={eloGain}
+                    value={safeGain}
+                    disabled={maxGain < 25}
                     onChange={(e) => setEloGain(Number(e.target.value))}
-                    className="w-full h-2.5 bg-[#0b0e16] rounded-full appearance-none cursor-pointer accent-blue-500 border border-[#1f2330] shadow-inner transition-all hover:brightness-110 active:brightness-125 focus:outline-none"
+                    className="w-full h-2.5 bg-[#0b0e16] rounded-full appearance-none cursor-pointer accent-blue-500 border border-[#1f2330] shadow-inner transition-all hover:brightness-110 active:brightness-125 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
                     style={{
-                      background: `linear-gradient(to right, #7c3aed 0%, #06b6d4 ${((eloGain - 25) / 1475) * 100}%, #0b0e16 ${((eloGain - 25) / 1475) * 100}%, #0b0e16 100%)`,
+                      background:
+                        maxGain < 25
+                          ? "#0b0e16"
+                          : `linear-gradient(to right, #7c3aed 0%, #06b6d4 ${((safeGain - 25) / (maxGain - 25)) * 100}%, #0b0e16 ${((safeGain - 25) / (maxGain - 25)) * 100}%, #0b0e16 100%)`,
                     }}
                   />
                   <div className="flex justify-between mt-3">
                     <span className="text-[9px] font-black text-gray-600 tracking-tighter shrink-0">
-                      START
+                      +25
                     </span>
                     <div className="h-px bg-[#1f2330] flex-1 mx-3 self-center opacity-30" />
                     <span className="text-[9px] font-black text-gray-600 tracking-tighter shrink-0">
-                      END +1500
+                      MAX {eloLimit.toLocaleString()} ELO
                     </span>
                   </div>
                 </div>
@@ -219,6 +306,7 @@ export function FaceitOrderForm() {
                 label="Self Play"
                 pct="+40%"
                 icon={<User size={16} />}
+                tooltip="Play alongside our boosters. Rank up without sharing your account credentials while learning from the best in real-time."
               />
               <OptionItem
                 active={options.priority}
@@ -226,6 +314,7 @@ export function FaceitOrderForm() {
                 label="Priority"
                 pct="+15%"
                 icon={<Zap size={16} />}
+                tooltip="Your order moves to the top of our queue, and we'll assign a booster to your account immediately."
               />
               <OptionItem
                 active={options.highRating}
@@ -233,13 +322,18 @@ export function FaceitOrderForm() {
                 label="High Rating"
                 pct="+20%"
                 icon={<Star size={16} />}
+                tooltip="Our booster will play from a higher rated account giving you the chance to try yourself in a higher skill level lobby."
               />
-              <OptionItem
-                active={options.moreBoosters}
-                onClick={() => toggleOption("moreBoosters")}
+              <CounterItem
+                count={options.moreBoosters}
+                maxCount={boostersMaxCount}
+                onIncrement={() => adjustCounter("moreBoosters", 1)}
+                onDecrement={() => adjustCounter("moreBoosters", -1)}
                 label="Extra Boosters"
-                pct="+15%"
+                pctPerUnit="+15%"
                 icon={<Users size={16} />}
+                tooltip="We'll add another booster to your lobby to ensure an even higher win rate and faster completion."
+                disabled={boostersDisabled}
               />
               <OptionItem
                 active={options.superExpress}
@@ -247,6 +341,7 @@ export function FaceitOrderForm() {
                 label="Super Express"
                 pct="+40%"
                 icon={<Rocket size={16} />}
+                tooltip="Our boosters will play around the clock to finish your order in the shortest possible time."
               />
               <OptionItem
                 active={options.premiumCoaching}
@@ -254,6 +349,7 @@ export function FaceitOrderForm() {
                 label="Coaching"
                 pct="+80%"
                 icon={<GraduationCap size={16} />}
+                tooltip="Improve your game. Receive a detailed analysis of your mistakes and pro tips from your booster during the service."
               />
               <OptionItem
                 active={options.soloOnly}
@@ -261,6 +357,8 @@ export function FaceitOrderForm() {
                 label="Solo Only"
                 pct="+35%"
                 icon={<User size={16} />}
+                tooltip="The booster will play strictly solo on your account to perfectly mimic natural user activity."
+                disabled={soloDisabled}
               />
               <OptionItem
                 active={options.offlineMode}
@@ -268,13 +366,18 @@ export function FaceitOrderForm() {
                 label="Offline Mode"
                 pct="FREE"
                 icon={<EyeOff size={16} />}
+                tooltip="Stay invisible. We'll set your Steam status to `Offline` so your friends won't see you playing during the boost."
               />
-              <OptionItem
-                active={options.bringFriend}
-                onClick={() => toggleOption("bringFriend")}
+              <CounterItem
+                count={options.bringFriend}
+                maxCount={friendsMaxCount}
+                onIncrement={() => adjustCounter("bringFriend", 1)}
+                onDecrement={() => adjustCounter("bringFriend", -1)}
                 label="Bring Friend"
-                pct="+70%"
+                pctPerUnit="+70%"
                 icon={<UserPlus size={16} />}
+                tooltip="You and a friend order a boost to play together and boost your rank in the same lobby. Requires Self Play."
+                disabled={bringFriendDisabled}
               />
               <OptionItem
                 active={options.premiumQue}
@@ -282,6 +385,8 @@ export function FaceitOrderForm() {
                 label="Premium Queue"
                 pct="+70%"
                 icon={<ShieldCheck size={16} />}
+                tooltip="Quality matches only. We will use the Faceit Premium queue to ensure better teammates and superior server quality. Available when total extra players ≤ 3."
+                disabled={premiumQueDisabled}
               />
               <OptionItem
                 active={options.starBooster}
@@ -289,6 +394,7 @@ export function FaceitOrderForm() {
                 label="Star Booster"
                 pct="+40%"
                 icon={<Star size={16} />}
+                tooltip="Guaranteed high-tier performance. Your order will be handled exclusively by players with FPL-C or 4000+ Elo status."
               />
             </div>
           </div>
@@ -311,13 +417,13 @@ export function FaceitOrderForm() {
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Rating Gain</span>
                   <span className="text-blue-500 font-bold">
-                    +{eloGain} ELO
+                    +{safeGain} ELO
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Addons Active</span>
                   <span className="text-blue-500 font-bold">
-                    {Object.values(options).filter((v) => v).length} selected
+                    {addonsCount} selected
                   </span>
                 </div>
                 <div className="h-px bg-white/5 w-full my-4" />
@@ -396,45 +502,236 @@ function OptionItem({
   label,
   pct,
   icon,
+  tooltip,
+  disabled,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
   pct: string;
   icon: React.ReactNode;
+  tooltip?: string;
+  disabled?: boolean;
 }) {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   return (
-    <button
-      onClick={onClick}
-      className={`relative cursor-pointer group flex items-center p-3 px-4 rounded-xl border transition-all duration-300 min-h-[60px] gap-3 overflow-hidden ${
-        active
-          ? "border-blue-500/50 bg-gradient-to-br from-blue-600/20 to-purple-600/10 shadow-[0_0_20px_rgba(59,130,246,0.15)] scale-[1.02] z-10"
-          : "border-[#1f2330] bg-[#161b28] hover:border-[#2d3446] hover:bg-[#1c2234]"
-      }`}
-    >
-      {active && (
-        <div className="absolute inset-0 bg-gradient-radial from-blue-500/10 to-transparent pointer-events-none" />
-      )}
-
-      <div
-        className={`transition-all duration-300 ${active ? "text-blue-500 scale-110" : "text-gray-500 group-hover:text-gray-400"}`}
+    <div className="relative">
+      <button
+        onClick={disabled ? undefined : onClick}
+        className={`relative w-full cursor-pointer group flex items-center p-3 px-4 rounded-xl border transition-all duration-300 min-h-[60px] gap-3 ${
+          disabled
+            ? "border-[#1a1d27] bg-[#12151e] opacity-40 cursor-not-allowed"
+            : active
+              ? "border-blue-500/50 bg-gradient-to-br from-blue-600/20 to-purple-600/10 shadow-[0_0_20px_rgba(59,130,246,0.15)] scale-[1.02] z-10"
+              : "border-[#1f2330] bg-[#161b28] hover:border-[#2d3446] hover:bg-[#1c2234]"
+        }`}
       >
-        {icon}
-      </div>
+        {active && !disabled && (
+          <div className="absolute inset-0 rounded-xl bg-gradient-radial from-blue-500/10 to-transparent pointer-events-none" />
+        )}
 
-      <div className="text-left flex-1">
-        <p
-          className={`text-[10px] font-black tracking-tight leading-tight uppercase transition-colors ${active ? "text-white" : "text-gray-400"}`}
+        <div
+          className={`transition-all duration-300 ${
+            disabled
+              ? "text-gray-700"
+              : active
+                ? "text-blue-500 scale-110"
+                : "text-gray-500 group-hover:text-gray-400"
+          }`}
         >
-          {label}
-        </p>
-      </div>
+          {icon}
+        </div>
 
-      {active && (
-        <div className="absolute top-2 right-2 flex items-center justify-center w-3 h-3 rounded-full bg-blue-500">
-          <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
+        <div className="text-left flex-1">
+          <p
+            className={`text-[10px] font-black tracking-tight leading-tight uppercase transition-colors ${
+              disabled
+                ? "text-gray-600"
+                : active
+                  ? "text-white"
+                  : "text-gray-400"
+            }`}
+          >
+            {label}
+          </p>
+        </div>
+
+        {tooltip && (
+          <span
+            className="relative z-20"
+            onMouseEnter={(e) => {
+              e.stopPropagation();
+              setShowTooltip(true);
+            }}
+            onMouseLeave={() => setShowTooltip(false)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <HelpCircle
+              size={14}
+              className={`transition-colors duration-200 cursor-help ${
+                showTooltip
+                  ? "text-blue-400"
+                  : "text-gray-600 hover:text-blue-400"
+              }`}
+            />
+          </span>
+        )}
+
+        {active && !disabled && (
+          <div className="absolute top-2 right-2 flex items-center justify-center w-3 h-3 rounded-full bg-blue-500">
+            <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
+          </div>
+        )}
+      </button>
+
+      {tooltip && (
+        <div
+          className={`absolute top-full right-0 mt-2 w-56 p-3 bg-[#1c2234] border border-[#2d3446] rounded-xl text-[11px] text-gray-300 leading-relaxed shadow-2xl shadow-black/50 z-50 pointer-events-none transition-all duration-200 ${
+            showTooltip
+              ? "opacity-100 translate-y-0 visible"
+              : "opacity-0 -translate-y-1 invisible"
+          }`}
+        >
+          <div className="absolute -top-1 right-4 w-2 h-2 bg-[#1c2234] border-l border-t border-[#2d3446] rotate-45" />
+          {tooltip}
         </div>
       )}
-    </button>
+    </div>
+  );
+}
+
+function CounterItem({
+  count,
+  maxCount,
+  onIncrement,
+  onDecrement,
+  label,
+  pctPerUnit,
+  icon,
+  tooltip,
+  disabled,
+}: {
+  count: number;
+  maxCount: number;
+  onIncrement: () => void;
+  onDecrement: () => void;
+  label: string;
+  pctPerUnit: string;
+  icon: React.ReactNode;
+  tooltip?: string;
+  disabled?: boolean;
+}) {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const active = count > 0 && !disabled;
+
+  return (
+    <div className="relative">
+      <div
+        className={`relative w-full group flex items-center p-3 px-4 rounded-xl border transition-all duration-300 min-h-[60px] gap-3 ${
+          disabled
+            ? "border-[#1a1d27] bg-[#12151e] opacity-40 cursor-not-allowed "
+            : active
+              ? "border-blue-500/50 bg-gradient-to-br from-blue-600/20 to-purple-600/10 shadow-[0_0_20px_rgba(59,130,246,0.15)] scale-[1.02] z-10"
+              : "border-[#1f2330] bg-[#161b28]"
+        }`}
+      >
+        {active && (
+          <div className="absolute inset-0 rounded-xl bg-gradient-radial from-blue-500/10 to-transparent pointer-events-none" />
+        )}
+
+        <div
+          className={`transition-all duration-300 ${
+            disabled
+              ? "text-gray-700"
+              : active
+                ? "text-blue-500 scale-110"
+                : "text-gray-500"
+          }`}
+        >
+          {icon}
+        </div>
+
+        <div className="text-left flex-1 min-w-0">
+          <p
+            className={`text-[10px] font-black tracking-tight leading-tight uppercase transition-colors ${
+              disabled
+                ? "text-gray-600"
+                : active
+                  ? "text-white"
+                  : "text-gray-400"
+            }`}
+          >
+            {label}
+          </p>
+          <div className="flex items-center gap-1.5 mt-1 relative z-10">
+            <button
+              onClick={disabled || count <= 0 ? undefined : onDecrement}
+              className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
+                disabled || count <= 0
+                  ? "text-gray-700 cursor-not-allowed"
+                  : "text-gray-500 hover:text-blue-400 cursor-pointer active:scale-90"
+              }`}
+            >
+              <Minus size={10} strokeWidth={3} />
+            </button>
+            <span
+              className={`text-[10px] font-bold tabular-nums ${active ? "text-blue-400" : "text-gray-500"}`}
+            >
+              {count}/{maxCount}
+            </span>
+            <button
+              onClick={disabled || count >= maxCount ? undefined : onIncrement}
+              className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
+                disabled || count >= maxCount
+                  ? "text-gray-700 cursor-not-allowed"
+                  : "text-gray-500 hover:text-blue-400 cursor-pointer active:scale-90"
+              }`}
+            >
+              <Plus size={10} strokeWidth={3} />
+            </button>
+          </div>
+        </div>
+
+        {tooltip && (
+          <span
+            className="relative z-20"
+            onMouseEnter={(e) => {
+              e.stopPropagation();
+              setShowTooltip(true);
+            }}
+            onMouseLeave={() => setShowTooltip(false)}
+          >
+            <HelpCircle
+              size={14}
+              className={`transition-colors duration-200 cursor-help ${
+                showTooltip
+                  ? "text-blue-400"
+                  : "text-gray-600 hover:text-blue-400"
+              }`}
+            />
+          </span>
+        )}
+
+        {active && (
+          <div className="absolute top-2 right-2 flex items-center justify-center w-3 h-3 rounded-full bg-blue-500">
+            <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
+          </div>
+        )}
+      </div>
+
+      {tooltip && (
+        <div
+          className={`absolute top-full right-0 mt-2 w-56 p-3 bg-[#1c2234] border border-[#2d3446] rounded-xl text-[11px] text-gray-300 leading-relaxed shadow-2xl shadow-black/50 z-50 pointer-events-none transition-all duration-200 ${
+            showTooltip
+              ? "opacity-100 translate-y-0 visible"
+              : "opacity-0 -translate-y-1 invisible"
+          }`}
+        >
+          <div className="absolute -top-1 right-4 w-2 h-2 bg-[#1c2234] border-l border-t border-[#2d3446] rotate-45" />
+          {tooltip}
+        </div>
+      )}
+    </div>
   );
 }

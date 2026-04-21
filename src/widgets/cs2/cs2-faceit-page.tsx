@@ -33,23 +33,26 @@ export function CS2FaceitPage() {
         gradientTitle="Faceit Boost?"
         features={[
           "Professional players with 3000+ ELO",
-          "Average 85%+ win rate across all orders",
-          "Live stream available on request",
+          "Average 75%+ win rate across all orders",
           "VPN and offline mode for account safety",
-          "Money-back guarantee if we can't deliver",
-          "24/7 support via Discord and Telegram",
+          "Clean Play without the use of any scripts, exploits, or third-party software",
+          "Money-back guarantee if we can't make an order",
+          "24/7 support via Discord",
         ]}
         howItWorksTitle="How Faceit Boost Works"
         steps={[
           { step: "1", text: "Select your current and desired Faceit level" },
           {
             step: "2",
-            text: "Complete the order and provide account details securely",
+            text: "Complete the order and provide account details securely or contact us in ticket via discord",
           },
-          { step: "3", text: "Our pro starts playing within 15 minutes" },
+          {
+            step: "3",
+            text: "Our boosters starts playing as soon as possible (or by shchedule you choose)",
+          },
           {
             step: "4",
-            text: "Track progress live and receive your boosted account",
+            text: "Wait till boost ends and receive your boosted account",
           },
         ]}
       />

@@ -34,8 +34,7 @@ const features = [
   {
     icon: Support,
     title: "24/7 Support",
-    description:
-      "Our support team is available around the clock via Discord, Telegram, and live chat.",
+    description: "Our support team is available around the clock via Discord.",
   },
   {
     icon: Clean,

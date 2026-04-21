@@ -29,7 +29,7 @@ export function CS2Page() {
               <ServiceCard
                 key={service.title}
                 service={service}
-                isComingSoon={service.title === "Coaching"}
+                isComingSoon={false}
               />
             ))}
           </div>

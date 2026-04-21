@@ -51,7 +51,10 @@ export async function POST(req: Request) {
             currency: "eur",
             product_data: {
               name: order.service,
-              description: `Boost from ${order.currentValue} to ${order.desiredValue}`,
+              description:
+                order.service === "CS2 Pro Coaching"
+                  ? `${order.currentValue} coaching session${order.currentValue === 1 ? "" : "s"}`
+                  : `Boost from ${order.currentValue} to ${order.desiredValue}`,
             },
             unit_amount: Math.round(order.price * 100),
           },
@@ -67,7 +70,13 @@ export async function POST(req: Request) {
         price: String(order.price),
       },
       success_url: `${process.env.WEB_SITE_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.WEB_SITE_URL}/cs2/${order.service.includes("Faceit") ? "faceit" : "premier"}`,
+      cancel_url: `${process.env.WEB_SITE_URL}/cs2/${
+        order.service === "CS2 Pro Coaching"
+          ? "coaching"
+          : order.service.includes("Faceit")
+            ? "faceit"
+            : "premier"
+      }`,
     });
 
     return NextResponse.json({ url: session.url });

@@ -7,4 +7,8 @@ export const orderApi = {
     api.get<Order[]>("orders", {
       withCredentials: true,
     }),
+  cancelOrder: (id: string): Promise<AxiosResponse<Order>> =>
+    api.patch<Order>(`orders/${id}/cancel`, null, {
+      withCredentials: true,
+    }),
 };

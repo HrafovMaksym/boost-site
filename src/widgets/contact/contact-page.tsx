@@ -6,14 +6,14 @@ const CONTACTS = [
   {
     icon: Mail,
     label: "Email",
-    value: "info@carryme.com",
-    href: "mailto:info@carryme.com",
+    value: "support@carryme.cc",
+    href: "mailto:support@carryme.cc",
   },
   {
     icon: MessageCircle,
     label: "Discord",
     value: "carryme",
-    href: "#",
+    href: "https://discord.gg/XzMFHxdpJP",
   },
 ];
 

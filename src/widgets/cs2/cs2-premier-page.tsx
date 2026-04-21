@@ -33,18 +33,27 @@ export function CS2PremierPage() {
         gradientTitle="Premier Boost?"
         features={[
           "Top-rated players with 30,000+ Premier rating",
-          "Consistent 80%+ win rate on all Premier orders",
-          "Solo or duo queue options for your comfort",
+          "Consistent 75%+ win rate on all Premier orders",
           "Secure VPN protection and offline mode included",
-          "Full money-back guarantee on every order",
-          "24/7 live support via Discord and Telegram",
+          "Clean Play without the use of any scripts, exploits, or third-party software",
+          "Full money-back guarantee if we can't make an order",
+          "24/7 live support via Discord",
         ]}
         howItWorksTitle="How Premier Boost Works"
         steps={[
           { step: "1", text: "Enter your current and target Premier rating" },
-          { step: "2", text: "Complete the order and share account details securely" },
-          { step: "3", text: "Our booster starts your session within 30 minutes" },
-          { step: "4", text: "Watch progress live and get your boosted account back" },
+          {
+            step: "2",
+            text: "Complete the order and share account details securely or contact us in ticket via discord",
+          },
+          {
+            step: "3",
+            text: "Our booster starts your session  as soon as possible (or by shchedule you choose)",
+          },
+          {
+            step: "4",
+            text: "Wait till boost ends and receive your boosted account",
+          },
         ]}
       />
     </>

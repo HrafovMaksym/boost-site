@@ -13,6 +13,9 @@ import {
   UserPlus,
   ChevronRight,
   Clock,
+  HelpCircle,
+  Plus,
+  Minus,
 } from "lucide-react";
 
 import { useAppSelector } from "@/shared/hooks/redux-hook";
@@ -26,18 +29,27 @@ export function PremiereOrderForm() {
   const [currentRating, setCurrentRating] = useState<number>(10000);
   const [ratingGain, setRatingGain] = useState<number>(2000);
   const [isOrdering, setIsOrdering] = useState(false);
-  const desiredRating = currentRating + ratingGain;
+  const maxGain = 30000 - currentRating;
+  const safeGain =
+    maxGain >= 500 ? Math.max(500, Math.min(ratingGain, maxGain)) : 0;
+  const desiredRating = currentRating + safeGain;
 
   const [options, setOptions] = useState({
-    partyBoost: false,
+    selfplay: false,
     priority: false,
-    boostersAmount: false,
+    boostersAmount: 0,
     express: false,
     coaching: false,
     solo: false,
-    bringFriend: false,
+    bringFriend: 0,
     rankedBooster: false,
   });
+
+  const soloDisabled = options.selfplay;
+  const bringFriendDisabled = !options.selfplay;
+
+  const boostersMaxCount = options.selfplay ? Math.min(4, 3 - options.bringFriend) : 4;
+  const friendsMaxCount = bringFriendDisabled ? 0 : Math.min(3, 3 - options.boostersAmount);
 
   const getPremiereRate = (rating: number) => {
     if (rating < 15000) return 0.01608;
@@ -56,34 +68,72 @@ export function PremiereOrderForm() {
     }
 
     let multiplier = 1;
-    if (options.partyBoost) multiplier += 0.4;
+    if (options.selfplay) multiplier += 0.4;
     if (options.priority) multiplier += 0.15;
-    if (options.boostersAmount) multiplier += 0.15;
+    multiplier += 0.15 * options.boostersAmount;
     if (options.express) multiplier += 0.4;
     if (options.coaching) multiplier += 0.8;
     if (options.solo) multiplier += 0.35;
-    if (options.bringFriend) multiplier += 0.7;
+    multiplier += 0.7 * options.bringFriend;
     if (options.rankedBooster) multiplier += 0.4;
 
     return Number((basePrice * multiplier).toFixed(2));
   }, [currentRating, desiredRating, options]);
 
-  const toggleOption = (key: keyof typeof options) => {
-    setOptions((prev) => ({ ...prev, [key]: !prev[key] }));
+  const toggleOption = (key: string) => {
+    setOptions((prev) => {
+      const next = { ...prev };
+
+      if (key === "selfplay") {
+        next.selfplay = !prev.selfplay;
+        if (next.selfplay) {
+          next.solo = false;
+          const maxBoosters = 3 - next.bringFriend;
+          if (next.boostersAmount > maxBoosters) next.boostersAmount = maxBoosters;
+        }
+        if (!next.selfplay) next.bringFriend = 0;
+      } else if (key === "solo") {
+        if (!soloDisabled) next.solo = !prev.solo;
+      } else {
+        (next as Record<string, boolean | number>)[key] = !(
+          prev as Record<string, boolean | number>
+        )[key];
+      }
+
+      return next;
+    });
+  };
+
+  const adjustCounter = (
+    key: "boostersAmount" | "bringFriend",
+    delta: number,
+  ) => {
+    setOptions((prev) => {
+      const next = { ...prev };
+      if (key === "boostersAmount") {
+        const max = next.selfplay ? Math.min(4, 3 - next.bringFriend) : 4;
+        next.boostersAmount = Math.max(0, Math.min(prev.boostersAmount + delta, max));
+      } else {
+        const max = Math.min(3, 3 - next.boostersAmount);
+        next.bringFriend = Math.max(0, Math.min(prev.bringFriend + delta, max));
+      }
+      return next;
+    });
   };
 
   const handleOrder = async () => {
     if (!user) return;
     setIsOrdering(true);
     try {
-      const { data } = await api.post("stripe/checkout", {
+      await api.post("orders", {
         service: "CS2 Premiere Boost",
         currentValue: currentRating,
         desiredValue: desiredRating,
         options,
         price,
       });
-      window.location.href = data.url;
+      toast.success("Order placed successfully!");
+      window.location.href = "/profile/orders";
     } catch (error) {
       console.error(error);
       toast.error("Failed to proceed to payment. Please try again.");
@@ -91,7 +141,19 @@ export function PremiereOrderForm() {
     }
   };
 
-  const sliderPercent = ((ratingGain - 500) / (10000 - 500)) * 100;
+  const sliderPercent =
+    maxGain <= 500 ? 0 : ((safeGain - 500) / (maxGain - 500)) * 100;
+
+  const addonsCount = [
+    options.selfplay,
+    options.priority,
+    options.boostersAmount > 0,
+    options.express,
+    options.coaching,
+    options.solo,
+    options.bringFriend > 0,
+    options.rankedBooster,
+  ].filter(Boolean).length;
 
   return (
     <div className="w-full">
@@ -129,13 +191,13 @@ export function PremiereOrderForm() {
                   <input
                     type="number"
                     min={0}
-                    max={35000}
+                    max={30000}
                     step={100}
                     value={currentRating === 0 ? "" : currentRating}
                     onChange={(e) => {
                       const val =
                         e.target.value === "" ? 0 : Number(e.target.value);
-                      if (val >= 0 && val <= 35000) setCurrentRating(val);
+                      if (val >= 0 && val <= 30000) setCurrentRating(val);
                     }}
                     className="w-full bg-[#161b28] border border-[#2d3446] rounded-2xl p-4 outline-none focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 font-bold text-white transition-all text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
@@ -162,13 +224,17 @@ export function PremiereOrderForm() {
                   <input
                     type="range"
                     min="500"
-                    max="10000"
+                    max={Math.max(500, maxGain)}
                     step="100"
-                    value={ratingGain}
+                    value={safeGain}
+                    disabled={maxGain < 500}
                     onChange={(e) => setRatingGain(Number(e.target.value))}
-                    className="w-full h-2.5 bg-[#0b0e16] rounded-full appearance-none cursor-pointer accent-purple-500 border border-[#1f2330] shadow-inner transition-all hover:brightness-110 active:brightness-125 focus:outline-none"
+                    className="w-full h-2.5 bg-[#0b0e16] rounded-full appearance-none cursor-pointer accent-purple-500 border border-[#1f2330] shadow-inner transition-all hover:brightness-110 active:brightness-125 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
                     style={{
-                      background: `linear-gradient(to right, #7c3aed 0%, #a855f7 ${sliderPercent}%, #0b0e16 ${sliderPercent}%, #0b0e16 100%)`,
+                      background:
+                        maxGain < 500
+                          ? "#0b0e16"
+                          : `linear-gradient(to right, #7c3aed 0%, #a855f7 ${sliderPercent}%, #0b0e16 ${sliderPercent}%, #0b0e16 100%)`,
                     }}
                   />
                   <div className="flex justify-between mt-3">
@@ -177,7 +243,7 @@ export function PremiereOrderForm() {
                     </span>
                     <div className="h-px bg-[#1f2330] flex-1 mx-3 self-center opacity-30" />
                     <span className="text-[9px] font-black text-gray-600 tracking-tighter shrink-0">
-                      +10,000
+                      MAX 30,000
                     </span>
                   </div>
                 </div>
@@ -199,11 +265,12 @@ export function PremiereOrderForm() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 max-h-[350px] md:max-h-none overflow-y-auto md:overflow-visible pr-2 md:pr-0 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#1f2330] [&::-webkit-scrollbar-thumb]:rounded-full">
               <OptionItem
-                active={options.partyBoost}
-                onClick={() => toggleOption("partyBoost")}
-                label="Party Boost"
+                active={options.selfplay}
+                onClick={() => toggleOption("selfplay")}
+                label="Self Play"
                 pct="+40%"
                 icon={<Users size={16} />}
+                tooltip="Play in a lobby with our professionals. Increase your rating while playing alongside pros without sharing your account."
               />
               <OptionItem
                 active={options.priority}
@@ -211,13 +278,17 @@ export function PremiereOrderForm() {
                 label="Priority"
                 pct="+15%"
                 icon={<Target size={16} />}
+                tooltip="Your order gets top priority in the queue. We will find and assign a booster to your order as quickly as possible."
               />
-              <OptionItem
-                active={options.boostersAmount}
-                onClick={() => toggleOption("boostersAmount")}
+              <CounterItem
+                count={options.boostersAmount}
+                maxCount={boostersMaxCount}
+                onIncrement={() => adjustCounter("boostersAmount", 1)}
+                onDecrement={() => adjustCounter("boostersAmount", -1)}
                 label="Extra Booster"
-                pct="+15%"
+                pctPerUnit="+15%"
                 icon={<UserPlus size={16} />}
+                tooltip="We will add another booster to your lobby. This ensures an incredible win rate and even faster completion."
               />
               <OptionItem
                 active={options.express}
@@ -225,6 +296,7 @@ export function PremiereOrderForm() {
                 label="Express"
                 pct="+40%"
                 icon={<Zap size={16} />}
+                tooltip="Accelerated completion. Our boosters will dedicate maximum time to your order to reach the target faster than standard estimates."
               />
               <OptionItem
                 active={options.coaching}
@@ -232,6 +304,7 @@ export function PremiereOrderForm() {
                 label="Coaching"
                 pct="+80%"
                 icon={<GraduationCap size={16} />}
+                tooltip="Get valuable tips and an analysis of your gameplay from the booster. A great chance to improve your personal skill level."
               />
               <OptionItem
                 active={options.solo}
@@ -239,13 +312,19 @@ export function PremiereOrderForm() {
                 label="Solo Only"
                 pct="+35%"
                 icon={<User size={16} />}
+                tooltip="The booster will play strictly solo on your account, mimicking natural activity for maximum security."
+                disabled={soloDisabled}
               />
-              <OptionItem
-                active={options.bringFriend}
-                onClick={() => toggleOption("bringFriend")}
+              <CounterItem
+                count={options.bringFriend}
+                maxCount={friendsMaxCount}
+                onIncrement={() => adjustCounter("bringFriend", 1)}
+                onDecrement={() => adjustCounter("bringFriend", -1)}
                 label="Bring Friend"
-                pct="+70%"
+                pctPerUnit="+70%"
                 icon={<Users size={16} />}
+                tooltip="You and a friend order a boost to play together and boost your rank in the same lobby. Requires Self Play."
+                disabled={bringFriendDisabled}
               />
               <OptionItem
                 active={options.rankedBooster}
@@ -253,6 +332,7 @@ export function PremiereOrderForm() {
                 label="Ranked Booster"
                 pct="+40%"
                 icon={<Trophy size={16} />}
+                tooltip="Your order will be handled exclusively by a top-tier performer with the highest win rate in our service."
               />
             </div>
           </div>
@@ -279,13 +359,13 @@ export function PremiereOrderForm() {
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Rating Gain</span>
                   <span className="text-purple-400 font-bold">
-                    +{ratingGain.toLocaleString()}
+                    +{safeGain.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Addons Active</span>
                   <span className="text-purple-400 font-bold">
-                    {Object.values(options).filter((v) => v).length} selected
+                    {addonsCount} selected
                   </span>
                 </div>
                 <div className="h-px bg-white/5 w-full my-4" />
@@ -366,45 +446,238 @@ function OptionItem({
   label,
   pct,
   icon,
+  tooltip,
+  disabled,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
   pct: string;
   icon: React.ReactNode;
+  tooltip?: string;
+  disabled?: boolean;
 }) {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   return (
-    <button
-      onClick={onClick}
-      className={`relative cursor-pointer group flex items-center p-3 px-4 rounded-xl border transition-all duration-300 min-h-[60px] gap-3 overflow-hidden ${
-        active
-          ? "border-purple-500/50 bg-gradient-to-br from-purple-600/20 to-pink-600/10 shadow-[0_0_20px_rgba(168,85,247,0.15)] scale-[1.02] z-10"
-          : "border-[#1f2330] bg-[#161b28] hover:border-[#2d3446] hover:bg-[#1c2234]"
-      }`}
-    >
-      {active && (
-        <div className="absolute inset-0 bg-gradient-radial from-purple-500/10 to-transparent pointer-events-none" />
-      )}
-
-      <div
-        className={`transition-all duration-300 ${active ? "text-purple-500 scale-110" : "text-gray-500 group-hover:text-gray-400"}`}
+    <div className="relative">
+      <button
+        onClick={disabled ? undefined : onClick}
+        className={`relative w-full cursor-pointer group flex items-center p-3 px-4 rounded-xl border transition-all duration-300 min-h-[60px] gap-3 ${
+          disabled
+            ? "border-[#1a1d27] bg-[#12151e] opacity-40 cursor-not-allowed"
+            : active
+              ? "border-purple-500/50 bg-gradient-to-br from-purple-600/20 to-pink-600/10 shadow-[0_0_20px_rgba(168,85,247,0.15)] scale-[1.02] z-10"
+              : "border-[#1f2330] bg-[#161b28] hover:border-[#2d3446] hover:bg-[#1c2234]"
+        }`}
       >
-        {icon}
-      </div>
+        {active && !disabled && (
+          <div className="absolute inset-0 rounded-xl bg-gradient-radial from-purple-500/10 to-transparent pointer-events-none" />
+        )}
 
-      <div className="text-left flex-1">
-        <p
-          className={`text-[10px] font-black tracking-tight leading-tight uppercase transition-colors ${active ? "text-white" : "text-gray-400"}`}
+        <div
+          className={`transition-all duration-300 ${
+            disabled
+              ? "text-gray-700"
+              : active
+                ? "text-purple-500 scale-110"
+                : "text-gray-500 group-hover:text-gray-400"
+          }`}
         >
-          {label}
-        </p>
-      </div>
+          {icon}
+        </div>
 
-      {active && (
-        <div className="absolute top-2 right-2 flex items-center justify-center w-3 h-3 rounded-full bg-purple-500">
-          <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
+        <div className="text-left flex-1">
+          <p
+            className={`text-[10px] font-black tracking-tight leading-tight uppercase transition-colors ${
+              disabled
+                ? "text-gray-600"
+                : active
+                  ? "text-white"
+                  : "text-gray-400"
+            }`}
+          >
+            {label}
+          </p>
+        </div>
+
+        {tooltip && (
+          <span
+            className="relative z-20"
+            onMouseEnter={(e) => {
+              e.stopPropagation();
+              setShowTooltip(true);
+            }}
+            onMouseLeave={() => setShowTooltip(false)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <HelpCircle
+              size={14}
+              className={`transition-colors duration-200 cursor-help ${
+                showTooltip
+                  ? "text-purple-400"
+                  : "text-gray-600 hover:text-purple-400"
+              }`}
+            />
+          </span>
+        )}
+
+        {active && !disabled && (
+          <div className="absolute top-2 right-2 flex items-center justify-center w-3 h-3 rounded-full bg-purple-500">
+            <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
+          </div>
+        )}
+      </button>
+
+      {tooltip && (
+        <div
+          className={`absolute top-full right-0 mt-2 w-56 p-3 bg-[#1c2234] border border-[#2d3446] rounded-xl text-[11px] text-gray-300 leading-relaxed shadow-2xl shadow-black/50 z-50 pointer-events-none transition-all duration-200 ${
+            showTooltip
+              ? "opacity-100 translate-y-0 visible"
+              : "opacity-0 -translate-y-1 invisible"
+          }`}
+        >
+          <div className="absolute -top-1 right-4 w-2 h-2 bg-[#1c2234] border-l border-t border-[#2d3446] rotate-45" />
+          {tooltip}
         </div>
       )}
-    </button>
+    </div>
+  );
+}
+
+function CounterItem({
+  count,
+  maxCount,
+  onIncrement,
+  onDecrement,
+  label,
+  pctPerUnit,
+  icon,
+  tooltip,
+  disabled,
+}: {
+  count: number;
+  maxCount: number;
+  onIncrement: () => void;
+  onDecrement: () => void;
+  label: string;
+  pctPerUnit: string;
+  icon: React.ReactNode;
+  tooltip?: string;
+  disabled?: boolean;
+}) {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const active = count > 0 && !disabled;
+
+  return (
+    <div className="relative">
+      <div
+        className={`relative w-full group flex items-center p-3 px-4 rounded-xl border transition-all duration-300 min-h-[60px] gap-3 ${
+          disabled
+            ? "border-[#1a1d27] bg-[#12151e] opacity-40"
+            : active
+              ? "border-purple-500/50 bg-gradient-to-br from-purple-600/20 to-pink-600/10 shadow-[0_0_20px_rgba(168,85,247,0.15)] scale-[1.02] z-10"
+              : "border-[#1f2330] bg-[#161b28]"
+        }`}
+      >
+        {active && (
+          <div className="absolute inset-0 rounded-xl bg-gradient-radial from-purple-500/10 to-transparent pointer-events-none" />
+        )}
+
+        <div
+          className={`transition-all duration-300 ${
+            disabled
+              ? "text-gray-700"
+              : active
+                ? "text-purple-500 scale-110"
+                : "text-gray-500"
+          }`}
+        >
+          {icon}
+        </div>
+
+        <div className="text-left flex-1 min-w-0">
+          <p
+            className={`text-[10px] font-black tracking-tight leading-tight uppercase transition-colors ${
+              disabled
+                ? "text-gray-600"
+                : active
+                  ? "text-white"
+                  : "text-gray-400"
+            }`}
+          >
+            {label}
+          </p>
+          <div className="flex items-center gap-1.5 mt-1 relative z-10">
+            <button
+              onClick={disabled || count <= 0 ? undefined : onDecrement}
+              className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
+                disabled || count <= 0
+                  ? "text-gray-700 cursor-not-allowed"
+                  : "text-gray-500 hover:text-purple-400 cursor-pointer active:scale-90"
+              }`}
+            >
+              <Minus size={10} strokeWidth={3} />
+            </button>
+            <span
+              className={`text-[10px] font-bold tabular-nums ${active ? "text-purple-400" : "text-gray-500"}`}
+            >
+              {count}/{maxCount}
+            </span>
+            <button
+              onClick={
+                disabled || count >= maxCount ? undefined : onIncrement
+              }
+              className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
+                disabled || count >= maxCount
+                  ? "text-gray-700 cursor-not-allowed"
+                  : "text-gray-500 hover:text-purple-400 cursor-pointer active:scale-90"
+              }`}
+            >
+              <Plus size={10} strokeWidth={3} />
+            </button>
+          </div>
+        </div>
+
+        {tooltip && (
+          <span
+            className="relative z-20"
+            onMouseEnter={(e) => {
+              e.stopPropagation();
+              setShowTooltip(true);
+            }}
+            onMouseLeave={() => setShowTooltip(false)}
+          >
+            <HelpCircle
+              size={14}
+              className={`transition-colors duration-200 cursor-help ${
+                showTooltip
+                  ? "text-purple-400"
+                  : "text-gray-600 hover:text-purple-400"
+              }`}
+            />
+          </span>
+        )}
+
+        {active && (
+          <div className="absolute top-2 right-2 flex items-center justify-center w-3 h-3 rounded-full bg-purple-500">
+            <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
+          </div>
+        )}
+      </div>
+
+      {tooltip && (
+        <div
+          className={`absolute top-full right-0 mt-2 w-56 p-3 bg-[#1c2234] border border-[#2d3446] rounded-xl text-[11px] text-gray-300 leading-relaxed shadow-2xl shadow-black/50 z-50 pointer-events-none transition-all duration-200 ${
+            showTooltip
+              ? "opacity-100 translate-y-0 visible"
+              : "opacity-0 -translate-y-1 invisible"
+          }`}
+        >
+          <div className="absolute -top-1 right-4 w-2 h-2 bg-[#1c2234] border-l border-t border-[#2d3446] rotate-45" />
+          {tooltip}
+        </div>
+      )}
+    </div>
   );
 }

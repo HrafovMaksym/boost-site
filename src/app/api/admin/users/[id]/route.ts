@@ -2,24 +2,31 @@ import { NextResponse } from "next/server";
 import prisma from "@/shared/lib/prisma/prisma";
 import { getTokenFromRequest } from "@/shared/api/get-token";
 
-export async function GET(req: Request) {
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
     const decoded = getTokenFromRequest(req);
     if (!decoded) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const currentUser = await prisma.user.findUnique({
+    const admin = await prisma.user.findUnique({
       where: { id: decoded.sub },
       select: { role: true },
     });
 
-    if (!currentUser || currentUser.role !== "ADMIN") {
+    if (!admin || admin.role !== "ADMIN") {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
-    const users = await prisma.user.findMany({
-      orderBy: { createdAt: "desc" },
+    const { id } = await params;
+    const { steamLink } = await req.json();
+
+    const user = await prisma.user.update({
+      where: { id },
+      data: { steamLink: steamLink || null },
       select: {
         id: true,
         name: true,
@@ -31,9 +38,9 @@ export async function GET(req: Request) {
       },
     });
 
-    return NextResponse.json(users, { status: 200 });
+    return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    console.error("Admin Users API Error:", error);
+    console.error("Admin user update error:", error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 },

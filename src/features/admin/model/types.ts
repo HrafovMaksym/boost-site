@@ -6,9 +6,12 @@ export interface AdminOrder {
   service: string;
   currentValue: number;
   desiredValue: number;
-  options: Record<string, boolean>;
+  options: Record<string, boolean | number>;
   total: string;
   createdAt: string;
+  updatedAt: string;
+  startedAt: string | null;
+  completedAt: string | null;
   user: {
     name: string;
     email: string;
@@ -20,6 +23,7 @@ export interface AdminUser {
   name: string;
   email: string;
   role: UserRole;
+  steamLink: string | null;
   createdAt: string;
   _count: {
     orders: number;
