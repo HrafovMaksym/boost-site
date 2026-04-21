@@ -15,8 +15,10 @@ export function GameCard({ game, isComingSoon }: GameCardProps) {
         <Image
           src={game.backgroundImage}
           alt={game.name}
-          className={`w-full h-[97%] object-cover transition-transform duration-700 will-change-transform ${
-            isComingSoon ? "brightness-[0.3]" : "group-hover:scale-[1.03]"
+          className={`w-full  object-cover transition-transform duration-700 will-change-transform ${
+            isComingSoon
+              ? "brightness-[0.3] h-full"
+              : "group-hover:scale-[1.03] h-[98%]"
           }`}
           sizes="(max-width: 768px) 100vw, 33vw"
         />
