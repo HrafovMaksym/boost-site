@@ -5,11 +5,13 @@ import { usePathname } from "next/navigation";
 import { clsx } from "clsx";
 import { menuItems } from "./model/consts";
 import { logout } from "@/features/auth/model/actions";
+import { clearUser } from "@/entities/user/user-slice";
 import { LogOut, ChevronRight } from "lucide-react";
-import { useAppSelector } from "@/shared/hooks/redux-hook";
+import { useAppDispatch, useAppSelector } from "@/shared/hooks/redux-hook";
 
 export function ProfileSidebar() {
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.user);
 
   return (
@@ -66,7 +68,10 @@ export function ProfileSidebar() {
         <div className="h-px bg-border my-2 mx-3" />
 
         <button
-          onClick={() => logout()}
+          onClick={() => {
+            dispatch(clearUser());
+            logout();
+          }}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-red-500/70 hover:text-red-400 hover:bg-red-500/10 group cursor-pointer"
         >
           <LogOut

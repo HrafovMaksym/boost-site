@@ -11,9 +11,11 @@ import logo from "@/shared/assets/logo.svg";
 import { NAV_LINKS } from "./model/consts";
 
 import { logout } from "@/features/auth/model/actions";
-import { useAppSelector } from "@/shared/hooks/redux-hook";
+import { clearUser } from "@/entities/user/user-slice";
+import { useAppDispatch, useAppSelector } from "@/shared/hooks/redux-hook";
 
 export function Header() {
+  const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.user);
   const [isOpen, setIsOpen] = useState(false);
   const [dropdown, setDropdown] = useState(false);
@@ -134,6 +136,7 @@ export function Header() {
                       <button
                         onClick={() => {
                           setDropdown(false);
+                          dispatch(clearUser());
                           logout();
                         }}
                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
@@ -245,6 +248,7 @@ export function Header() {
                     <button
                       onClick={() => {
                         setIsOpen(false);
+                        dispatch(clearUser());
                         logout();
                       }}
                       className="px-4 py-3 rounded-xl hover:bg-red-500/10 text-red-400 text-left transition-colors"

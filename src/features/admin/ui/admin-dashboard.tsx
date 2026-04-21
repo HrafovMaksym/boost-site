@@ -10,6 +10,7 @@ import {
   ExternalLink,
   ChevronDown,
   CalendarIcon,
+  Download,
   X,
 } from "lucide-react";
 import { api } from "@/shared/config/axios-config";
@@ -20,6 +21,94 @@ import type { AdminOrder, AdminUser } from "../model/types";
 type Tab = "orders" | "users";
 
 const STATUSES = ["PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED"] as const;
+
+function escapeCsv(val: string): string {
+  if (val.includes(",") || val.includes('"') || val.includes("\n")) {
+    return `"${val.replace(/"/g, '""')}"`;
+  }
+  return val;
+}
+
+function formatDate(date: string | null): string {
+  if (!date) return "";
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function exportToCsv(orders: AdminOrder[], users: AdminUser[]) {
+  const orderHeaders = [
+    "Order ID",
+    "Service",
+    "Status",
+    "Customer Name",
+    "Customer Email",
+    "Current Value",
+    "Desired Value",
+    "Total (EUR)",
+    "Ordered",
+    "Started",
+    "Completed",
+  ];
+
+  const orderRows = orders.map((o) =>
+    [
+      o.id,
+      o.service,
+      o.status,
+      o.user?.name || "",
+      o.user?.email || "",
+      String(o.currentValue),
+      String(o.desiredValue),
+      Number(o.total).toFixed(2),
+      formatDate(o.createdAt),
+      formatDate(o.startedAt),
+      formatDate(o.completedAt),
+    ].map(escapeCsv).join(","),
+  );
+
+  const userHeaders = [
+    "User ID",
+    "Name",
+    "Email",
+    "Role",
+    "Steam Link",
+    "Orders Count",
+    "Registered",
+  ];
+
+  const userRows = users.map((u) =>
+    [
+      u.id,
+      u.name,
+      u.email,
+      u.role,
+      u.steamLink || "",
+      String(u._count.orders),
+      formatDate(u.createdAt),
+    ].map(escapeCsv).join(","),
+  );
+
+  const csv = [
+    "ORDERS",
+    orderHeaders.join(","),
+    ...orderRows,
+    "",
+    "USERS",
+    userHeaders.join(","),
+    ...userRows,
+  ].join("\n");
+
+  const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `admin-export-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
 
 export const AdminDashboard = () => {
   const [orders, setOrders] = useState<AdminOrder[]>([]);
@@ -96,7 +185,7 @@ export const AdminDashboard = () => {
         />
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         <TabButton
           active={tab === "orders"}
           onClick={() => setTab("orders")}
@@ -107,6 +196,14 @@ export const AdminDashboard = () => {
           onClick={() => setTab("users")}
           label="Users"
         />
+        <button
+          onClick={() => exportToCsv(orders, users)}
+          disabled={loading}
+          className="ml-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-emerald-600 text-white shadow-lg shadow-emerald-900/30 hover:bg-emerald-500 transition-all cursor-pointer disabled:opacity-50"
+        >
+          <Download size={14} />
+          Export Info
+        </button>
       </div>
 
       {loading ? (
@@ -252,6 +349,7 @@ function DatePicker({
   value,
   orderId,
   field,
+  currentStatus,
   onUpdate,
   color = "blue",
 }: {
@@ -259,6 +357,7 @@ function DatePicker({
   value: string | null;
   orderId: string;
   field: "startedAt" | "completedAt";
+  currentStatus: string;
   onUpdate: (order: AdminOrder) => void;
   color?: string;
 }) {
@@ -278,11 +377,17 @@ function DatePicker({
     if (!date) return;
     setSaving(true);
     try {
-      const { data } = await api.patch<AdminOrder>(`admin/orders/${orderId}`, {
-        [field]: date.toISOString(),
-      });
+      const payload: Record<string, unknown> = { [field]: date.toISOString() };
+      if (field === "startedAt" && currentStatus !== "IN_PROGRESS") {
+        payload.status = "IN_PROGRESS";
+      }
+      if (field === "completedAt" && currentStatus !== "COMPLETED") {
+        payload.status = "COMPLETED";
+      }
+      const { data } = await api.patch<AdminOrder>(`admin/orders/${orderId}`, payload);
       onUpdate(data);
-      toast.success(`${label} updated`);
+      const statusChanged = payload.status ? ` → ${(payload.status as string).replace("_", " ")}` : "";
+      toast.success(`${label} updated${statusChanged}`);
     } catch {
       toast.error(`Failed to update ${label.toLowerCase()}`);
     } finally {
@@ -418,6 +523,7 @@ function OrdersTable({
               value={order.startedAt}
               orderId={order.id}
               field="startedAt"
+              currentStatus={order.status}
               onUpdate={onUpdate}
               color="blue"
             />
@@ -426,6 +532,7 @@ function OrdersTable({
               value={order.completedAt}
               orderId={order.id}
               field="completedAt"
+              currentStatus={order.status}
               onUpdate={onUpdate}
               color="green"
             />

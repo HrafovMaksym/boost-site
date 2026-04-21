@@ -230,9 +230,9 @@ export function PrivacyPolicyPage() {
                       Discord
                     </Link>
                     ,{" "}
-                    <Link href="mailto:support@carryme.cc" className="text-accent-secondary">
-                      support@carryme.cc
-                    </Link>
+                    <span className="text-accent-secondary">
+                      carryme.support@gmail.com
+                    </span>
                     , and{" "}
                     <Link
                       href={"https://stripe.com/"}
@@ -290,12 +290,9 @@ export function PrivacyPolicyPage() {
                       <span className="text-xs text-text-muted uppercase font-bold block mb-1">
                         Email Support
                       </span>
-                      <a
-                        href="mailto:carryme.support@gmail.com"
-                        className="text-accent-primary hover:underline font-medium"
-                      >
+                      <span className="text-accent-primary hover:underline font-medium">
                         carryme.support@gmail.com
-                      </a>
+                      </span>
                     </div>
                     <div>
                       <span className="text-xs text-text-muted uppercase font-bold block mb-1">

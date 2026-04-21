@@ -338,12 +338,9 @@ export function TermsPage() {
                         <span className="text-xs text-text-muted uppercase block">
                           Email
                         </span>
-                        <a
-                          href="mailto:carryme.support@gmail.com"
-                          className="text-accent-primary font-medium"
-                        >
+                        <span className="text-accent-primary font-medium">
                           carryme.support@gmail.com
-                        </a>
+                        </span>
                       </div>
                       <div className="flex-1 p-3 bg-bg-primary/60 border border-border/50 rounded-lg">
                         <span className="text-xs text-text-muted uppercase block">

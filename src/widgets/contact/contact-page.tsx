@@ -6,8 +6,7 @@ const CONTACTS = [
   {
     icon: Mail,
     label: "Email",
-    value: "support@carryme.cc",
-    href: "mailto:support@carryme.cc",
+    value: "carryme.support@gmail.com",
   },
   {
     icon: MessageCircle,

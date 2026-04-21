@@ -162,15 +162,14 @@ export function FaceitOrderForm() {
     if (!user) return;
     setIsOrdering(true);
     try {
-      await api.post("orders", {
+      const { data } = await api.post("stripe/checkout", {
         service: "Faceit ELO Boost",
         currentValue: currentElo,
         desiredValue: desiredElo,
         options,
         price,
       });
-      toast.success("Order placed successfully!");
-      window.location.href = "/profile/orders";
+      window.location.href = data.url;
     } catch (error) {
       console.error(error);
       toast.error("Failed to proceed to payment. Please try again.");

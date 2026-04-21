@@ -35,26 +35,9 @@ const FACEIT_COUNTER_MULTIPLIERS: Record<
   bringFriend: { rate: 0.7, max: 3 },
 };
 
-const COACHING_OPTIONS = [
-  "priority",
-  "liveSession",
-  "demoReview",
-  "voiceComms",
-  "screenShare",
-  "proCoach",
-] as const;
+const COACHING_VALID_MODES = ["demoReview", "coaching"] as const;
 
-const COACHING_MULTIPLIERS: Record<
-  (typeof COACHING_OPTIONS)[number],
-  number
-> = {
-  priority: 0.2,
-  liveSession: 0.35,
-  demoReview: 0.15,
-  voiceComms: 0.1,
-  screenShare: 0.25,
-  proCoach: 0.5,
-};
+const COACHING_PRIORITY_MULTIPLIER = 0.2;
 
 const COACHING_PRICES: Record<number, number> = {
   1: 21.49,
@@ -134,7 +117,7 @@ interface ValidatedOrder {
   service: ServiceType;
   currentValue: number;
   desiredValue: number;
-  options: Record<string, boolean | number>;
+  options: Record<string, boolean | number | string>;
   price: number;
 }
 
@@ -190,19 +173,27 @@ export function validateAndCalculatePrice(body: unknown): ValidatedOrder {
       throw new Error("Sessions count must be between 1 and 15");
     }
 
-    for (const value of Object.values(validatedOptions)) {
-      if (typeof value !== "boolean") {
-        throw new Error("Option values must be booleans");
+    const allowedKeys = new Set(["priority", "mode"]);
+    for (const key of Object.keys(validatedOptions)) {
+      if (!allowedKeys.has(key)) {
+        throw new Error(`Invalid option: ${key}`);
       }
     }
 
-    const optionKeys = Object.keys(validatedOptions);
-    for (const key of optionKeys) {
-      if (
-        !COACHING_OPTIONS.includes(key as (typeof COACHING_OPTIONS)[number])
-      ) {
-        throw new Error(`Invalid option: ${key}`);
-      }
+    if (
+      validatedOptions.priority !== undefined &&
+      typeof validatedOptions.priority !== "boolean"
+    ) {
+      throw new Error("priority must be a boolean");
+    }
+
+    if (
+      typeof validatedOptions.mode !== "string" ||
+      !COACHING_VALID_MODES.includes(
+        validatedOptions.mode as (typeof COACHING_VALID_MODES)[number],
+      )
+    ) {
+      throw new Error("mode must be 'demoReview' or 'coaching'");
     }
 
     const basePrice = COACHING_PRICES[currentValue];
@@ -211,18 +202,15 @@ export function validateAndCalculatePrice(body: unknown): ValidatedOrder {
     }
 
     let multiplier = 1;
-    for (const key of optionKeys) {
-      if (validatedOptions[key] === true) {
-        multiplier +=
-          COACHING_MULTIPLIERS[key as (typeof COACHING_OPTIONS)[number]];
-      }
+    if (validatedOptions.priority === true) {
+      multiplier += COACHING_PRIORITY_MULTIPLIER;
     }
 
     return {
       service,
       currentValue,
       desiredValue,
-      options: validatedOptions as Record<string, boolean>,
+      options: validatedOptions as Record<string, boolean | string>,
       price: Number((basePrice * multiplier).toFixed(2)),
     };
   }

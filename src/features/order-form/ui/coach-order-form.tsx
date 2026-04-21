@@ -7,11 +7,8 @@ import {
   ChevronRight,
   Clock,
   HelpCircle,
-  Video,
   FileText,
-  Mic,
-  Monitor,
-  Star,
+  Video,
 } from "lucide-react";
 
 import { useAppSelector } from "@/shared/hooks/redux-hook";
@@ -37,51 +34,34 @@ const COACHING_PRICES: Record<number, number> = {
   15: 284.99,
 };
 
+type CoachingMode = "demoReview" | "coaching";
+
 export function CoachOrderForm() {
   const { user } = useAppSelector((state) => state.user);
   const [sessionsCount, setSessionsCount] = useState<number>(1);
   const [isOrdering, setIsOrdering] = useState(false);
-
-  const [options, setOptions] = useState({
-    priority: false,
-    liveSession: false,
-    demoReview: false,
-    voiceComms: false,
-    screenShare: false,
-    proCoach: false,
-  });
+  const [mode, setMode] = useState<CoachingMode>("coaching");
+  const [priority, setPriority] = useState(false);
 
   const price = useMemo(() => {
     const basePrice = COACHING_PRICES[sessionsCount] || 21.49;
-
     let multiplier = 1;
-    if (options.priority) multiplier += 0.2;
-    if (options.liveSession) multiplier += 0.35;
-    if (options.demoReview) multiplier += 0.15;
-    if (options.voiceComms) multiplier += 0.1;
-    if (options.screenShare) multiplier += 0.25;
-    if (options.proCoach) multiplier += 0.5;
-
+    if (priority) multiplier += 0.2;
     return Number((basePrice * multiplier).toFixed(2));
-  }, [sessionsCount, options]);
-
-  const toggleOption = (key: keyof typeof options) => {
-    setOptions((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
+  }, [sessionsCount, priority]);
 
   const handleOrder = async () => {
     if (!user) return;
     setIsOrdering(true);
     try {
-      await api.post("orders", {
+      const { data } = await api.post("stripe/checkout", {
         service: "CS2 Pro Coaching",
         currentValue: sessionsCount,
         desiredValue: sessionsCount,
-        options,
+        options: { priority, mode },
         price,
       });
-      toast.success("Order placed successfully!");
-      window.location.href = "/profile/orders";
+      window.location.href = data.url;
     } catch (error) {
       console.error(error);
       toast.error("Failed to proceed to payment. Please try again.");
@@ -95,7 +75,7 @@ export function CoachOrderForm() {
     <div className="w-full">
       <div className="bg-[#0b0e16] border border-[#1f2330] rounded-[32px] p-1 shadow-2xl overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 relative z-10">
-          <div className="lg:col-span-3 p-8 border-b lg:border-b-0 lg:border-r border-[#1f2330] bg-gradient-to-b from-transparent to-emerald-500/5">
+          <div className="lg:col-span-4 p-8 border-b lg:border-b-0 lg:border-r border-[#1f2330] bg-gradient-to-b from-transparent to-emerald-500/5">
             <div className="flex items-center gap-3 mb-8">
               <div className="bg-emerald-600/10 p-1.5 rounded-lg text-emerald-500 shadow-inner border border-emerald-500/20">
                 <GraduationCap size={32} />
@@ -111,6 +91,60 @@ export function CoachOrderForm() {
             </div>
 
             <div className="space-y-6">
+              <div>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">
+                  Coaching Type
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setMode("coaching")}
+                    className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-300 cursor-pointer ${
+                      mode === "coaching"
+                        ? "border-emerald-500/50 bg-gradient-to-br from-emerald-600/20 to-teal-600/10 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+                        : "border-[#1f2330] bg-[#161b28] hover:border-[#2d3446] hover:bg-[#1c2234]"
+                    }`}
+                  >
+                    <Video
+                      size={20}
+                      className={`transition-colors ${mode === "coaching" ? "text-emerald-400" : "text-gray-500"}`}
+                    />
+                    <span
+                      className={`text-[10px] font-black uppercase tracking-tight ${mode === "coaching" ? "text-white" : "text-gray-400"}`}
+                    >
+                      Live Coaching
+                    </span>
+                    {mode === "coaching" && (
+                      <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-emerald-500">
+                        <div className="absolute inset-0.5 rounded-full bg-white" />
+                      </div>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setMode("demoReview")}
+                    className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-300 cursor-pointer ${
+                      mode === "demoReview"
+                        ? "border-emerald-500/50 bg-gradient-to-br from-emerald-600/20 to-teal-600/10 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+                        : "border-[#1f2330] bg-[#161b28] hover:border-[#2d3446] hover:bg-[#1c2234]"
+                    }`}
+                  >
+                    <FileText
+                      size={20}
+                      className={`transition-colors ${mode === "demoReview" ? "text-emerald-400" : "text-gray-500"}`}
+                    />
+                    <span
+                      className={`text-[10px] font-black uppercase tracking-tight ${mode === "demoReview" ? "text-white" : "text-gray-400"}`}
+                    >
+                      Demo Review
+                    </span>
+                    {mode === "demoReview" && (
+                      <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-emerald-500">
+                        <div className="absolute inset-0.5 rounded-full bg-white" />
+                      </div>
+                    )}
+                  </button>
+                </div>
+              </div>
+
               <div className="space-y-4 group p-4 bg-[#161b28]/50 border border-[#2d3446]/50 rounded-2xl relative transition-all hover:bg-[#161b28]">
                 <div className="flex justify-between items-end px-1">
                   <div className="flex flex-col">
@@ -152,11 +186,11 @@ export function CoachOrderForm() {
               <div className="bg-[#161b28]/50 border-l-2 border-emerald-500 p-4 rounded-r-xl">
                 <p className="text-[11px] text-gray-400 leading-relaxed">
                   <span className="text-white font-bold block mb-1">
-                    What&apos;s Included
+                    {mode === "coaching" ? "Live Coaching" : "Demo Review"}
                   </span>
-                  Every session includes a 1-hour coaching call with a
-                  professional player. Discuss roles, positioning, and
-                  decision-making. Get a written report after each session.
+                  {mode === "coaching"
+                    ? "Play live games with a professional coach spectating in real-time. Get instant feedback on your decisions, positioning, and mechanics."
+                    : "Send us your recent match demos and our coach will prepare a detailed breakdown of your gameplay with timestamps and improvement notes."}
                 </p>
               </div>
 
@@ -167,72 +201,38 @@ export function CoachOrderForm() {
             </div>
           </div>
 
-          <div className="lg:col-span-6 p-8 relative bg-[#0b0e16]">
+          <div className="lg:col-span-5 p-8 relative bg-[#0b0e16] flex flex-col justify-start">
             <div className="flex items-center justify-between mb-6">
               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                Extra Coaching Services
+                Extra Services
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 max-h-[350px] md:max-h-none overflow-y-auto md:overflow-visible pr-2 md:pr-0 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#1f2330] [&::-webkit-scrollbar-thumb]:rounded-full">
+            <div className="max-w-sm">
               <OptionItem
-                active={options.priority}
-                onClick={() => toggleOption("priority")}
+                active={priority}
+                onClick={() => setPriority(!priority)}
                 label="Priority"
                 pct="+20%"
                 icon={<Zap size={16} />}
                 tooltip="Your coaching request moves to the top of our queue. We'll match you with a coach and schedule your first session as fast as possible."
               />
-              <OptionItem
-                active={options.liveSession}
-                onClick={() => toggleOption("liveSession")}
-                label="Live Session"
-                pct="+35%"
-                icon={<Video size={16} />}
-                tooltip="Play live games with your coach spectating in real-time. Get instant feedback on your decisions, positioning, and mechanics as you play."
-              />
-              <OptionItem
-                active={options.demoReview}
-                onClick={() => toggleOption("demoReview")}
-                label="Demo Review"
-                pct="+15%"
-                icon={<FileText size={16} />}
-                tooltip="Send us your recent match demos and our coach will prepare a detailed breakdown of your gameplay with timestamps and improvement notes."
-              />
-              <OptionItem
-                active={options.voiceComms}
-                onClick={() => toggleOption("voiceComms")}
-                label="Voice Comms"
-                pct="+10%"
-                icon={<Mic size={16} />}
-                tooltip="Stay connected with your coach via Discord or TeamSpeak throughout the session for real-time communication and callouts."
-              />
-              <OptionItem
-                active={options.screenShare}
-                onClick={() => toggleOption("screenShare")}
-                label="Screen Share"
-                pct="+25%"
-                icon={<Monitor size={16} />}
-                tooltip="Your coach will share their screen to walk you through strategies, utility lineups, and positioning using interactive map tools."
-              />
-              <OptionItem
-                active={options.proCoach}
-                onClick={() => toggleOption("proCoach")}
-                label="Pro Coach"
-                pct="+50%"
-                icon={<Star size={16} />}
-                tooltip="Get coached by a verified professional player or analyst with competitive tournament experience at the highest level."
-              />
             </div>
           </div>
 
-          <div className="lg:col-span-3 p-8 bg-[#0d111a] flex flex-col justify-between">
+          <div className="lg:col-span-3 p-8 bg-[#0d111a] flex flex-col justify-between border-l border-[#1f2330]">
             <div>
               <p className="text-[10px] text-gray-500 uppercase font-black mb-6 tracking-widest">
                 Order Summary
               </p>
 
               <div className="space-y-4 mb-8">
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Type</span>
+                  <span className="text-emerald-400 font-bold">
+                    {mode === "coaching" ? "Live Coaching" : "Demo Review"}
+                  </span>
+                </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Sessions</span>
                   <span className="text-white font-bold">
@@ -246,18 +246,12 @@ export function CoachOrderForm() {
                     {sessionsCount}h total
                   </span>
                 </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-gray-400">Reports</span>
-                  <span className="text-emerald-400 font-bold">
-                    {sessionsCount} included
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-gray-400">Addons Active</span>
-                  <span className="text-emerald-400 font-bold">
-                    {Object.values(options).filter((v) => v).length} selected
-                  </span>
-                </div>
+                {priority && (
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400">Priority</span>
+                    <span className="text-emerald-400 font-bold">+20%</span>
+                  </div>
+                )}
                 <div className="h-px bg-white/5 w-full my-4" />
                 <div className="flex flex-col">
                   <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">
@@ -265,7 +259,7 @@ export function CoachOrderForm() {
                   </p>
                   <div className="flex items-baseline gap-1">
                     <span className="text-2xl font-black text-emerald-500">
-                      €
+                      &euro;
                     </span>
                     <span className="text-5xl font-black text-white tracking-tighter leading-none">
                       {price}

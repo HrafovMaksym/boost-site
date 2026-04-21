@@ -105,8 +105,8 @@ export default async function OrderSuccessPage({
                       Join Our <span className="text-[#5865F2]">Discord</span>
                     </h2>
                     <p className="text-text-secondary text-xs md:text-sm leading-relaxed mb-5 max-w-xs mx-auto">
-                      Connect with your booster, track progress in real-time,
-                      and get instant support from our team.
+                      Connect with your booster, and get instant support from
+                      our team.
                     </p>
 
                     <a
