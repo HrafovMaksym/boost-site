@@ -12,7 +12,7 @@ export async function getUser(): Promise<User | null> {
       id: session.id,
       email: session.email,
       name: session.name,
-      role: session.role,
+
       createdAt: session.createdAt,
     };
   } catch (error) {
