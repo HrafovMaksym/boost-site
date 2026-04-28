@@ -4,6 +4,8 @@ const protectedRoutes = ["/profile"];
 const authRoutes = ["/login", "/registration"];
 export function proxy(request: NextRequest) {
   const token = request.cookies.get("refresh_token")?.value;
+  console.log("token", token);
+
   const { pathname } = request.nextUrl;
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route),

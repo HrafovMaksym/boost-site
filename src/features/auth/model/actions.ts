@@ -14,6 +14,8 @@ export async function getSession() {
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
   const refreshToken = cookieStore.get("refresh_token")?.value;
+  console.log("refresh_token", refreshToken);
+  console.log("cookieStore", cookieStore);
 
   let userId: string | null = null;
 
