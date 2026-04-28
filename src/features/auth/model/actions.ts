@@ -80,7 +80,7 @@ export async function getSession() {
         createdAt: true,
       },
     });
-    console.log("user exist");
+
     return user;
   } catch (error) {
     return null;
@@ -106,6 +106,19 @@ export async function verifyAdmin(): Promise<boolean> {
 
 export async function logout() {
   const cookieStore = await cookies();
+  const refreshToken = cookieStore.get("refresh_token")?.value;
+
+  if (refreshToken) {
+    try {
+      await prisma.refreshToken.updateMany({
+        where: { token: refreshToken, revokedAt: null },
+        data: { revokedAt: new Date() },
+      });
+    } catch (error) {
+      console.error("Failed to revoke refresh token on logout", error);
+    }
+  }
+
   cookieStore.delete("access_token");
   cookieStore.delete("refresh_token");
 

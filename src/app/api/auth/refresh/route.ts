@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { sign } from "jsonwebtoken";
 import prisma from "@/shared/lib/prisma/prisma";
-import { randomUUID } from "crypto";
 
 export async function POST(req: Request) {
   try {
@@ -15,9 +14,9 @@ export async function POST(req: Request) {
           return [key, rest.join("=")];
         }),
     );
-    const oldRefreshToken = cookies["refresh_token"];
+    const refreshToken = cookies["refresh_token"];
 
-    if (!oldRefreshToken) {
+    if (!refreshToken) {
       return NextResponse.json(
         { message: "No refresh token" },
         { status: 401 },
@@ -25,7 +24,7 @@ export async function POST(req: Request) {
     }
 
     const storedToken = await prisma.refreshToken.findUnique({
-      where: { token: oldRefreshToken },
+      where: { token: refreshToken },
       include: { user: true },
     });
 
@@ -40,23 +39,6 @@ export async function POST(req: Request) {
       );
     }
 
-    const newRefreshToken = randomUUID();
-    const refreshExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-
-    await prisma.$transaction([
-      prisma.refreshToken.update({
-        where: { id: storedToken.id },
-        data: { revokedAt: new Date() },
-      }),
-      prisma.refreshToken.create({
-        data: {
-          userId: storedToken.userId,
-          token: newRefreshToken,
-          expiresAt: refreshExpiresAt,
-        },
-      }),
-    ]);
-
     const accessToken = sign(
       { sub: storedToken.user.id, email: storedToken.user.email },
       process.env.JWT_SECRET!,
@@ -70,14 +52,6 @@ export async function POST(req: Request) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 15 * 60,
-      path: "/",
-    });
-
-    response.cookies.set("refresh_token", newRefreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60,
       path: "/",
     });
 
