@@ -15,7 +15,7 @@ type FailedRequest = {
   config: RetryConfig;
 };
 
-let isRefreshing = false;
+let refreshInFlight: Promise<void> | null = null;
 let failedQueue: FailedRequest[] = [];
 
 function processQueue(error: unknown) {
@@ -37,6 +37,37 @@ export function onAuthRefreshFailed(cb: AuthFailedCallback): () => void {
   return () => {
     authFailedListeners.delete(cb);
   };
+}
+
+export function resetAuthState() {
+  // Drop any in-flight refresh promise / queued retries when the user
+  // changes (logout, switch account). Prevents replaying requests from a
+  // previous session against a new identity in the same tab.
+  refreshInFlight = null;
+  failedQueue.forEach(({ reject }) => {
+    reject(new Error("Auth state reset"));
+  });
+  failedQueue = [];
+}
+
+export function refreshAuthToken(): Promise<void> {
+  if (refreshInFlight) return refreshInFlight;
+
+  refreshInFlight = api
+    .post("/auth/refresh")
+    .then(() => {
+      processQueue(null);
+    })
+    .catch((err) => {
+      processQueue(err);
+      authFailedListeners.forEach((cb) => cb());
+      throw err;
+    })
+    .finally(() => {
+      refreshInFlight = null;
+    });
+
+  return refreshInFlight;
 }
 
 api.interceptors.response.use(
@@ -61,25 +92,19 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (isRefreshing) {
+    if (refreshInFlight) {
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject, config: originalRequest });
       });
     }
 
     originalRequest._retry = true;
-    isRefreshing = true;
 
     try {
-      await api.post("/auth/refresh");
-      processQueue(null);
+      await refreshAuthToken();
       return api(originalRequest);
     } catch (refreshError) {
-      processQueue(refreshError);
-      authFailedListeners.forEach((cb) => cb());
       return Promise.reject(refreshError);
-    } finally {
-      isRefreshing = false;
     }
   },
 );

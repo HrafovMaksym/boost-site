@@ -10,48 +10,63 @@ export interface SessionPayload {
   email: string;
 }
 
-export async function getSession() {
+async function clearAuthCookies() {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.delete("access_token");
+    cookieStore.delete("refresh_token");
+  } catch {
+    // cookies() may be read-only in some RSC contexts; safe to ignore
+  }
+}
+
+async function resolveUserIdFromCookies(): Promise<string | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
   const refreshToken = cookieStore.get("refresh_token")?.value;
-  console.log("refresh_token", refreshToken);
-
-  let userId: string | null = null;
 
   if (token) {
     try {
       const decoded = verify(token, process.env.JWT_SECRET!) as SessionPayload;
-      userId = decoded.sub;
+      return decoded.sub;
     } catch {
-      // access token might be expired, fallback to checking refresh token
+      // access token expired/invalid — fall through to refresh check
     }
   }
 
-  if (!userId && refreshToken) {
-    console.log("access expired; Refresh still alive");
+  if (!refreshToken) return null;
 
-    try {
-      const storedToken = await prisma.refreshToken.findUnique({
-        where: { token: refreshToken },
-        select: { userId: true, revokedAt: true, expiresAt: true },
-      });
-      console.log("storedToken", storedToken);
+  try {
+    const storedToken = await prisma.refreshToken.findUnique({
+      where: { token: refreshToken },
+      select: { userId: true, revokedAt: true, expiresAt: true },
+    });
 
-      if (
-        storedToken &&
-        !storedToken.revokedAt &&
-        storedToken.expiresAt > new Date()
-      ) {
-        console.log("  userId = storedToken.userId;");
-
-        userId = storedToken.userId;
-      }
-    } catch (error) {
-      console.error("Failed to check refresh token in getSession", error);
+    if (!storedToken) {
+      // Cookie holds a token that doesn't exist in DB — clear it so the
+      // proxy stops treating the user as authenticated.
+      await clearAuthCookies();
+      return null;
     }
-  }
 
-  console.log("userid", userId);
+    if (storedToken.revokedAt || storedToken.expiresAt <= new Date()) {
+      // Stale/revoked refresh token. This happens when the rotation
+      // response from /api/auth/refresh never reached the browser
+      // (closed tab, network error, etc.). Clear cookies so the user is
+      // routed to /login cleanly instead of being stuck in a redirect loop.
+      await clearAuthCookies();
+      return null;
+    }
+
+    return storedToken.userId;
+  } catch (error) {
+    console.error("Failed to validate refresh token", error);
+    return null;
+  }
+}
+
+export async function getSession() {
+  const userId = await resolveUserIdFromCookies();
 
   if (!userId) return null;
 
@@ -73,38 +88,7 @@ export async function getSession() {
 }
 
 export async function verifyAdmin(): Promise<boolean> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("access_token")?.value;
-  const refreshToken = cookieStore.get("refresh_token")?.value;
-
-  let userId: string | null = null;
-
-  if (token) {
-    try {
-      const decoded = verify(token, process.env.JWT_SECRET!) as SessionPayload;
-      userId = decoded.sub;
-    } catch {
-      // access token might be expired, fallback to checking refresh token
-    }
-  }
-
-  if (!userId && refreshToken) {
-    try {
-      const storedToken = await prisma.refreshToken.findUnique({
-        where: { token: refreshToken },
-        select: { userId: true, revokedAt: true, expiresAt: true },
-      });
-      if (
-        storedToken &&
-        !storedToken.revokedAt &&
-        storedToken.expiresAt > new Date()
-      ) {
-        userId = storedToken.userId;
-      }
-    } catch (error) {
-      console.error("Failed to check refresh token in verifyAdmin", error);
-    }
-  }
+  const userId = await resolveUserIdFromCookies();
 
   if (!userId) return false;
 
