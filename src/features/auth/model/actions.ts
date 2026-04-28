@@ -27,6 +27,8 @@ export async function getSession() {
   }
 
   if (!userId && refreshToken) {
+    console.log("access expired; Refresh still alive");
+
     try {
       const storedToken = await prisma.refreshToken.findUnique({
         where: { token: refreshToken },
@@ -44,6 +46,8 @@ export async function getSession() {
     }
   }
 
+  console.log("userid", userId);
+
   if (!userId) return null;
 
   try {
@@ -56,7 +60,7 @@ export async function getSession() {
         createdAt: true,
       },
     });
-
+    console.log("user exist");
     return user;
   } catch (error) {
     return null;
