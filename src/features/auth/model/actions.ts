@@ -15,7 +15,6 @@ export async function getSession() {
   const token = cookieStore.get("access_token")?.value;
   const refreshToken = cookieStore.get("refresh_token")?.value;
   console.log("refresh_token", refreshToken);
-  console.log("cookieStore", cookieStore);
 
   let userId: string | null = null;
 
@@ -36,11 +35,15 @@ export async function getSession() {
         where: { token: refreshToken },
         select: { userId: true, revokedAt: true, expiresAt: true },
       });
+      console.log("storedToken", storedToken);
+
       if (
         storedToken &&
         !storedToken.revokedAt &&
         storedToken.expiresAt > new Date()
       ) {
+        console.log("  userId = storedToken.userId;");
+
         userId = storedToken.userId;
       }
     } catch (error) {

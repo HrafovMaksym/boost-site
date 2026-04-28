@@ -6,6 +6,8 @@ import { User } from "./types";
 export async function getUser(): Promise<User | null> {
   try {
     const session = await getSession();
+    console.log("session", session);
+
     if (!session) return null;
 
     return {
